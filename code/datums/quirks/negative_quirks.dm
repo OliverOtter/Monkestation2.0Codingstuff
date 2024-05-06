@@ -598,6 +598,24 @@
 	to_chat(quirk_holder, span_boldannounce("Your [slot_string] has been replaced with a surplus prosthetic. It is fragile and will easily come apart under duress. Additionally, \
 	you need to use a welding tool and cables to repair it, instead of bruise packs and ointment."))
 
+/datum/quirk/bipedal_amputee
+	name = "Bipedal Amputee"
+	desc = "Your legs dont work anymore, so you got some prostetic ones to move around in again!"
+	icon = "tg-prosthetic-leg" //this is most likely going to be a placeholder for now, some proper art for it would be nice, but im just a coder, not an artist :<
+	value = -5
+	medical_record_text = "During physical examination, patient was found to have prostetic legs."
+	hardcore_value = 5
+	quirk_flags = QUIRK_HUMAN_ONLY|QUIRK_CHANGES_APPEARANCE
+
+/datum/quirk/bipedal_amputee/add_unique(client/client_source)
+	var/mob/living/carbon/human/human_holder = quirk_holder
+	human_holder.del_and_replace_bodypart(new /obj/item/bodypart/leg/left/robot/surplus)
+	human_holder.del_and_replace_bodypart(new /obj/item/bodypart/leg/right/robot/surplus)
+
+/datum/quirk/bipedal_amputee/post_add()
+	to_chat(quirk_holder, span_boldannounce("Your legs have been replaced with surplus prosthetics. They are fragile and will easily come apart under duress. Additionally, \
+	you need to use a welding tool and cables to repair them, instead of bruise packs and ointment."))
+
 /datum/quirk/quadruple_amputee
 	name = "Quadruple Amputee"
 	desc = "Oops! All Prosthetics! Due to some truly cruel cosmic punishment, all your limbs have been taken from you."
