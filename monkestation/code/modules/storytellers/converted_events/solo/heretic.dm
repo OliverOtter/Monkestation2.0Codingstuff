@@ -4,6 +4,7 @@
 	antag_datum = /datum/antagonist/heretic
 	protected_roles = list(
 		JOB_CAPTAIN,
+		JOB_BLUESHIELD,
 		JOB_HEAD_OF_PERSONNEL,
 		JOB_CHIEF_ENGINEER,
 		JOB_CHIEF_MEDICAL_OFFICER,
@@ -15,12 +16,13 @@
 		JOB_SECURITY_OFFICER,
 		JOB_SECURITY_ASSISTANT,
 		JOB_WARDEN,
+		JOB_BRIG_PHYSICIAN,
 	)
 	restricted_roles = list(
 		JOB_AI,
 		JOB_CYBORG,
 	)
-	weight = 4
+	weight = 6
 	min_players = 20
 
 /datum/round_event_control/antagonist/solo/heretic/roundstart

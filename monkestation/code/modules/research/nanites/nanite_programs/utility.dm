@@ -108,7 +108,7 @@
 
 	update_research_speed()
 
-	host_mob.add_body_temperature_change(NANITE_RESEARCH_CHANGE, research_speed * 15)
+	host_mob.add_homeostasis_level(NANITE_RESEARCH_CHANGE, host_mob.standard_body_temperature + research_speed * 15, 0.25 KELVIN)
 	use_rate = initial(use_rate) * research_speed
 	current_research_bonus = use_rate
 	SSresearch.science_tech.nanite_bonus += current_research_bonus
@@ -120,7 +120,7 @@
 /datum/nanite_program/research/disable_passive_effect()
 	. = ..()
 	SSresearch.science_tech.nanite_bonus -= current_research_bonus
-	host_mob.remove_body_temperature_change(NANITE_RESEARCH_CHANGE)
+	host_mob.remove_homeostasis_level(NANITE_RESEARCH_CHANGE)
 
 /datum/nanite_program/research/set_extra_setting(setting, value)
 	. = ..()
@@ -250,12 +250,12 @@
 	if(!iscarbon(host_mob))
 		return FALSE
 	var/mob/living/carbon/C = host_mob
-	if(C.nutrition <= NUTRITION_LEVEL_WELL_FED)
+	if(C.nutrition <= NUTRITION_LEVEL_STARVING) //It's the nanite programmer's job to make sure nanites don't starve the host, also allows a saboteur to starve everyone who has nanites.
 		return FALSE
 	return ..()
 
 /datum/nanite_program/metabolic_synthesis/active_effect()
-	host_mob.adjust_nutrition(-0.5)
+	host_mob.adjust_nutrition(-0.25)
 
 /datum/nanite_program/access
 	name = "Subdermal ID"
@@ -361,6 +361,49 @@
 		fault.software_error()
 		host_mob.investigate_log("[fault] nanite program received a software error due to Mitosis program.", INVESTIGATE_NANITES)
 
+/datum/nanite_program/repeat
+	name = "Signal Repeater"
+	desc = "When triggered, sends another signal to the nanites, optionally with a delay."
+	unique = FALSE
+	can_trigger = TRUE
+	trigger_cost = 0
+	trigger_cooldown = 10
+
+/datum/nanite_program/repeat/register_extra_settings()
+	. = ..()
+	extra_settings[NES_SENT_CODE] = new /datum/nanite_extra_setting/number(0, 1, 9999)
+	extra_settings[NES_DELAY] = new /datum/nanite_extra_setting/number(0, 0, 3600, "s")
+
+/datum/nanite_program/repeat/on_trigger(comm_message)
+	var/datum/nanite_extra_setting/ES = extra_settings[NES_DELAY]
+	addtimer(CALLBACK(src, PROC_REF(send_code)), ES.get_value() * 10)
+
+/datum/nanite_program/relay_repeat
+	name = "Relay Signal Repeater"
+	desc = "When triggered, sends another signal to a relay channel, optionally with a delay."
+	unique = FALSE
+	can_trigger = TRUE
+	trigger_cost = 0
+	trigger_cooldown = 10
+
+/datum/nanite_program/relay_repeat/register_extra_settings()
+	. = ..()
+	extra_settings[NES_SENT_CODE] = new /datum/nanite_extra_setting/number(0, 1, 9999)
+	extra_settings[NES_RELAY_CHANNEL] = new /datum/nanite_extra_setting/number(1, 1, 9999)
+	extra_settings[NES_DELAY] = new /datum/nanite_extra_setting/number(0, 0, 3600, "s")
+
+/datum/nanite_program/relay_repeat/on_trigger(comm_message)
+	var/datum/nanite_extra_setting/ES = extra_settings[NES_DELAY]
+	addtimer(CALLBACK(src, PROC_REF(send_code)), ES.get_value() * 10)
+
+/datum/nanite_program/relay_repeat/send_code()
+	var/datum/nanite_extra_setting/relay = extra_settings[NES_RELAY_CHANNEL]
+	if(activated && relay.get_value())
+		for(var/X in SSnanites.nanite_relays)
+			var/datum/nanite_program/relay/N = X
+			var/datum/nanite_extra_setting/code = extra_settings[NES_SENT_CODE]
+			N.relay_signal(code.get_value(), relay.get_value(), "a [name] program")
+
 /datum/nanite_program/dermal_button
 	name = "Dermal Button"
 	desc = "Displays a button on the host's skin, which can be used to send a signal to the nanites."
@@ -412,3 +455,4 @@
 
 /datum/action/innate/nanite_button/Activate()
 	program.press()
+	playsound(owner, SFX_BUTTON_CLICK, vol = 20, vary = FALSE, extrarange = SILENCED_SOUND_EXTRARANGE, mixer_channel = CHANNEL_MACHINERY)

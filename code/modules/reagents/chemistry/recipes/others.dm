@@ -395,6 +395,12 @@
 	rate_up_lim = 40
 	reaction_tags = REACTION_TAG_EASY | REACTION_TAG_UNIQUE
 
+/datum/chemical_reaction/piss_cleaner
+	results = list(/datum/reagent/space_cleaner = 2)
+	required_reagents = list(/datum/reagent/ammonia/urine = 2, /datum/reagent/water = 1)
+	rate_up_lim = 40
+	reaction_tags = REACTION_TAG_EASY | REACTION_TAG_UNIQUE
+
 /datum/chemical_reaction/plantbgone
 	results = list(/datum/reagent/toxin/plantbgone = 5)
 	required_reagents = list(/datum/reagent/toxin = 1, /datum/reagent/water = 4)
@@ -880,9 +886,10 @@
 /datum/chemical_reaction/eigenstate/reaction_finish(datum/reagents/holder, datum/equilibrium/reaction, react_vol)
 	. = ..()
 	var/turf/open/location = get_turf(holder.my_atom)
-	if(reaction.data["ducts_teleported"] == TRUE) //If we teleported an duct, then we reconnect it at the end
-		for(var/obj/item/stack/ducts/duct in range(location, 3))
-			duct.check_attach_turf(duct.loc)
+	if(reaction)
+		if(reaction.data["ducts_teleported"] == TRUE) //If we teleported an duct, then we reconnect it at the end
+			for(var/obj/item/stack/ducts/duct in range(location, 3))
+				duct.check_attach_turf(duct.loc)
 
 	var/datum/reagent/eigenstate/eigen = holder.has_reagent(/datum/reagent/eigenstate)
 	if(!eigen)

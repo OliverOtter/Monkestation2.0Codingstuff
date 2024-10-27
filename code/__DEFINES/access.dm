@@ -51,6 +51,8 @@
 #define ACCESS_HOS "hos"
 /// Access for the detective to get into their office, the medical data console, and some other detective-related stuff.
 #define ACCESS_DETECTIVE "detective"
+/// Access for the brig physician to get basic access to medical tools, but not all encompassing access to medical under normal manning. MONKESTATION EDIT
+#define ACCESS_BRIG_PHYSICIAN "brig_physician" /// MONKESTATION EDIT
 
 /// Engineering General Access, grants access to the standard parts of engineering (as well as the Supermatter and related equipment).
 #define ACCESS_ENGINEERING "engineering"
@@ -292,6 +294,7 @@
 	ACCESS_DETECTIVE, \
 	ACCESS_ENGINEERING, \
 	ACCESS_ENGINE_EQUIP, \
+	ACCESS_EVA, \
 	ACCESS_EXTERNAL_AIRLOCKS, \
 	ACCESS_GENETICS, \
 	ACCESS_HYDROPONICS, \
@@ -344,10 +347,12 @@
 	ACCESS_MINISAT, \
 	ACCESS_RC_ANNOUNCE, \
 	ACCESS_TCOMMS, \
+	ACCESS_TCOMMS_ADMIN, \
 	ACCESS_TECH_STORAGE, \
 	ACCESS_TELEPORTER, \
 	ACCESS_VAULT, \
 )
+// MONKESTATION ADDITION -- NTSL -- added: ACCESS_TCOMMS_ADMIN up there
 
 /// Private head of staff offices, usually only granted to most cards by trimming. Do not use direct, access via SSid_access.get_flag_access_list(ACCESS_FLAG_PRV_COMMAND)
 #define PRIVATE_COMMAND_ACCESS list( \
@@ -485,8 +490,11 @@
 	ACCESS_MECH_ENGINE, \
 	ACCESS_MINISAT, \
 	ACCESS_TCOMMS, \
+	ACCESS_TCOMMS_ADMIN, \
 	ACCESS_TECH_STORAGE, \
 )
+// MONKESTATION ADDITION -- NTSL -- added: ACCESS_TCOMMS_ADMIN up there
+
 /// Name for the Supply region.
 #define REGION_SUPPLY "Supply"
 /// Used to seed the accesses_by_region list in SSid_access. A list of all cargo regional accesses that are overseen by the HoP.

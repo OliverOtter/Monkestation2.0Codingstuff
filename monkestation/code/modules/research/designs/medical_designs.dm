@@ -34,3 +34,36 @@
 	name = "Filter Blood Upgrade"
 	surgery = /datum/surgery/blood_filter/femto
 	id = "surgery_filter_upgrade_femto"
+
+/datum/design/surgical_glove
+	name = "Surgical Latex Glove"
+	desc = "Advanced latex gloves that allow the user to operate 25% quicker"
+	id =  "surgical_gloves"
+	build_path = /obj/item/clothing/gloves/latex/surgical
+	build_type = PROTOLATHE | AWAY_LATHE
+	materials = list(/datum/material/iron = 10000, /datum/material/glass = 2500, /datum/material/silver = 20000, /datum/material/gold = 1500)
+	category = list(
+		RND_CATEGORY_TOOLS + RND_SUBCATEGORY_EQUIPMENT_MEDICAL
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_MEDICAL
+
+/datum/design/surgery/robot_healing // Apparently this helps the code not scream looking at other examples?
+	name = "Repair Robotic Limbs"
+	desc = "A surgical procedure that provides highly effective repairs and maintenance to robotic limbs."
+	surgery = /datum/surgery/robot_healing
+	id = "surgery_heal_robot_base"
+	research_icon_state = "surgery_chest"
+	
+/datum/design/surgery/robot_healing/upgraded
+	name = "Repair Robotic Limbs (Physical) Upgrade"
+	desc = "A surgical procedure that provides highly effective repairs and maintenance to robotic limbs. Is somewhat more efficient when the patient is severely damaged."
+	surgery = /datum/surgery/robot_healing/upgraded
+	id = "surgery_heal_robot_upgrade"
+	research_icon_state = "surgery_chest"
+
+/datum/design/surgery/robot_healing/upgraded_2
+	name = "Repair Robotic Limbs (Physical) Upgrade"
+	desc = "A surgical procedure that quickly provides highly effective repairs and maintenance to robotic limbs. Is moderately more efficient when the patient is severely damaged."
+	surgery = /datum/surgery/robot_healing/experimental
+	id = "surgery_heal_robot_upgrade_femto"
+	research_icon_state = "surgery_chest"

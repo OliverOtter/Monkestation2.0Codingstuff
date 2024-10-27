@@ -182,9 +182,9 @@ Striking a noncultist, however, will tear their flesh."}
 	flags_inv = HIDEFACE|HIDEHAIR|HIDEEARS
 	flags_cover = HEADCOVERSEYES
 	armor_type = /datum/armor/hooded_cult_hoodie
-	cold_protection = HEAD
+
 	min_cold_protection_temperature = HELMET_MIN_TEMP_PROTECT
-	heat_protection = HEAD
+
 	max_heat_protection_temperature = HELMET_MAX_TEMP_PROTECT
 
 /datum/armor/hooded_cult_hoodie
@@ -208,9 +208,9 @@ Striking a noncultist, however, will tear their flesh."}
 	allowed = list(/obj/item/tome, /obj/item/melee/cultblade)
 	armor_type = /datum/armor/hooded_cultrobes
 	flags_inv = HIDEJUMPSUIT
-	cold_protection = CHEST|GROIN|LEGS|ARMS
+
 	min_cold_protection_temperature = ARMOR_MIN_TEMP_PROTECT
-	heat_protection = CHEST|GROIN|LEGS|ARMS
+
 	max_heat_protection_temperature = ARMOR_MAX_TEMP_PROTECT
 	hoodtype = /obj/item/clothing/head/hooded/cult_hoodie
 
@@ -775,7 +775,7 @@ Striking a noncultist, however, will tear their flesh."}
 	desc = "Blood for blood."
 	color = "#ff0000"
 	guns_left = 24
-	mag_type = /obj/item/ammo_box/magazine/internal/blood
+	accepted_magazine_type = /obj/item/ammo_box/magazine/internal/blood
 	fire_sound = 'sound/magic/wand_teleport.ogg'
 
 /obj/item/gun/ballistic/rifle/enchanted/arcane_barrage/blood/can_trigger_gun(mob/living/user, akimbo_usage)

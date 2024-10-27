@@ -106,12 +106,13 @@ GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
 		JOB_SECURITY_OFFICER_SUPPLY = 16,
 		JOB_DETECTIVE = 17,
 		JOB_SECURITY_ASSISTANT = 18, // monkestation edit: add security assistants
+		JOB_BRIG_PHYSICIAN = 19, // monkestation edit: add brig physician
 		// 20-29: Medbay
-		JOB_CHIEF_MEDICAL_OFFICER = 20,
-		JOB_CHEMIST = 21,
-		JOB_VIROLOGIST = 22,
-		JOB_MEDICAL_DOCTOR = 23,
-		JOB_PARAMEDIC = 24,
+		JOB_CHIEF_MEDICAL_OFFICER = 21,
+		JOB_CHEMIST = 22,
+		JOB_VIROLOGIST = 23,
+		JOB_MEDICAL_DOCTOR = 24,
+		JOB_PARAMEDIC = 25,
 		// 30-39: Science
 		JOB_RESEARCH_DIRECTOR = 30,
 		JOB_SCIENTIST = 31,
@@ -137,7 +138,7 @@ GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
 		JOB_JANITOR = 68,
 		JOB_LAWYER = 69,
 		JOB_PSYCHOLOGIST = 71,
-		// 200-229: Centcom
+		// 200-239: Centcom 
 		JOB_CENTCOM_ADMIRAL = 200,
 		JOB_CENTCOM = 201,
 		JOB_CENTCOM_OFFICIAL = 210,
@@ -154,8 +155,11 @@ GLOBAL_DATUM_INIT(crewmonitor, /datum/crewmonitor, new)
 		JOB_ERT_CHAPLAIN = 225,
 		JOB_ERT_JANITOR = 226,
 		JOB_ERT_DEATHSQUAD = 227,
+		JOB_NT_REP = 230,
+		JOB_BLUESHIELD = 231,
 
 		// ANYTHING ELSE = UNKNOWN_JOB_ID, Unknowns/custom jobs will appear after civilians, and before assistants
+		JOB_PRISONER = 998,
 		JOB_ASSISTANT = 999,
 	)
 

@@ -185,7 +185,7 @@
 		else
 			if(ismob(A))
 				changeNext_move(CLICK_CD_MELEE)
-			UnarmedAttack(A,1)
+			UnarmedAttack(A,1, modifiers)
 	else
 		if(W)
 			if((istate & ISTATE_SECONDARY))
@@ -311,7 +311,7 @@
  * used for figuring out different properties of the click, mostly right vs left and such.
  */
 
-/mob/proc/UnarmedAttack(atom/A, proximity_flag)
+/mob/proc/UnarmedAttack(atom/A, proximity_flag, list/params)
 	if(ismob(A))
 		changeNext_move(CLICK_CD_MELEE)
 	return
@@ -359,6 +359,7 @@
 	return
 
 /atom/proc/ShiftClick(mob/user)
+	SEND_SIGNAL(src, COMSIG_SHIFT_CLICKED_ON, user)
 	var/flags = SEND_SIGNAL(user, COMSIG_CLICK_SHIFT, src)
 	if(flags & COMSIG_MOB_CANCEL_CLICKON)
 		return

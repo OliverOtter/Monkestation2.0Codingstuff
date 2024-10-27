@@ -68,6 +68,10 @@
 
 	if(SSgamemode.current_roundstart_event && !SSgamemode.ran_roundstart && (guarantees_roundstart_roleset || roundstart_checks))
 		buy_event(SSgamemode.current_roundstart_event, EVENT_TRACK_ROLESET, TRUE)
+		if(EVENT_TRACK_ROLESET in SSgamemode.forced_next_events)
+			SSgamemode.forced_next_events[EVENT_TRACK_ROLESET] = null
+			SSgamemode.forced_next_events -= EVENT_TRACK_ROLESET
+
 		log_storyteller("Running SSgamemode.current_roundstart_event\[[SSgamemode.current_roundstart_event]\]")
 		SSgamemode.current_roundstart_event = null
 		if(!ignores_roundstart)
@@ -118,7 +122,7 @@
 		var/list/valid_events = list()
 		// Determine which events are valid to pick
 		for(var/datum/round_event_control/event as anything in mode.event_pools[track])
-			var/players_amt = get_active_player_count(alive_check = 1, afk_check = 1, human_check = 1)
+			var/players_amt = get_active_player_count(alive_check = TRUE, afk_check = TRUE, human_check = TRUE)
 			if(event.can_spawn_event(players_amt))
 				if(QDELETED(event))
 					message_admins("[event.name] was deleted!")

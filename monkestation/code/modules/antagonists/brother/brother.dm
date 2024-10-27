@@ -42,9 +42,6 @@
 	team.forge_brother_objectives()
 	hosts_mind.add_antag_datum(/datum/antagonist/brother, team)
 
-/datum/antagonist/brother/render_poll_preview()
-	return image(get_base_preview_icon())
-
 /datum/antagonist/brother/proc/communicate(message)
 	if(!istext(message) || !length(message) || QDELETED(owner) || QDELETED(team))
 		return
@@ -52,6 +49,8 @@
 	var/formatted_msg = "<span class='[team.color]'><b><i>\[Blood Bond\]</i> [span_name("[owner.name]")]</b>: [message]</span>"
 	for(var/datum/mind/brother as anything in team.members)
 		var/mob/living/target = brother.current
+		if(QDELETED(target))
+			continue
 		if(brother != owner)
 			target.balloon_alert(target, "you hear a voice")
 			target.playsound_local(get_turf(target), 'goon/sounds/radio_ai.ogg', vol = 25, vary = FALSE, pressure_affected = FALSE, use_reverb = FALSE)

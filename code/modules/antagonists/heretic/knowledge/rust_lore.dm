@@ -264,7 +264,7 @@
 	priority_announce(
 		text = "[generate_heretic_text()] Fear the decay, for the Rustbringer, [user.real_name] has ascended! None shall escape the corrosion! [generate_heretic_text()]",
 		title = "[generate_heretic_text()]",
-		sound = 'monkestation/sound/ambience/antag/heretic/ascend_rust.ogg',
+		sound = 'sound/ambience/antag/heretic/ascend_rust.ogg',
 		color_override = "pink",
 	)
 	new /datum/rust_spread(loc)
@@ -342,7 +342,7 @@
 	rusted_turfs += centre
 	START_PROCESSING(SSprocessing, src)
 
-/datum/rust_spread/Destroy(force, ...)
+/datum/rust_spread/Destroy(force)
 	centre = null
 	edge_turfs.Cut()
 	rusted_turfs.Cut()
@@ -378,7 +378,7 @@
 		max_dist = max(max_dist, get_dist(found_turf, centre) + 1)
 
 	for(var/turf/nearby_turf as anything in spiral_range_turfs(max_dist, centre, FALSE))
-		if(nearby_turf in rusted_turfs || is_type_in_typecache(nearby_turf, blacklisted_turfs))
+		if((nearby_turf in rusted_turfs) || is_type_in_typecache(nearby_turf, blacklisted_turfs))
 			continue
 
 		for(var/turf/line_turf as anything in get_line(nearby_turf, centre))

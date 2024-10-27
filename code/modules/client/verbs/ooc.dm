@@ -55,7 +55,7 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 
 	msg = emoji_parse(msg)
 
-	if(SSticker.HasRoundStarted() && (msg[1] in list(".",";",":","#") || findtext_char(msg, "say", 1, 5)))
+	if(SSticker.HasRoundStarted() && ((msg[1] in list(".",";",":","#")) || findtext_char(msg, "say", 1, 5)))
 		if(tgui_alert(usr,"Your message \"[raw_msg]\" looks like it was meant for in game communication, say it in OOC?", "Meant for OOC?", list("Yes", "No")) != "Yes")
 			return
 
@@ -456,3 +456,12 @@ GLOBAL_VAR_INIT(normal_ooc_colour, "#002eb8")
 	set hidden = TRUE
 
 	init_verbs()
+
+/client/proc/export_preferences()
+	set name = "Export Preferences"
+	set desc = "Export your current preferences to a file."
+	set category = "OOC"
+
+	ASSERT(prefs, "User attempted to export preferences while preferences were null!") // what the fuck
+
+	prefs.savefile.export_json_to_client(usr, ckey)

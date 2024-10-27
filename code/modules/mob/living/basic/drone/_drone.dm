@@ -27,7 +27,7 @@
 	unsuitable_heat_damage = 0
 	speed = 0
 	density = FALSE
-	pass_flags = PASSTABLE | PASSMOB
+	pass_flags = PASSTABLE | PASSMOB | PASSDOORS //Monke, drones have PASSDOORS so they don't have to open doors to pass.
 	sight = SEE_TURFS | SEE_OBJS
 	status_flags = (CANPUSH | CANSTUN | CANKNOCKDOWN)
 	gender = NEUTER
@@ -162,6 +162,12 @@
 		/obj/item/clothing/mask,
 		/obj/item/storage/box/lights,
 		/obj/item/lightreplacer,
+		/obj/item/construction/rcd,
+		/obj/item/rcd_ammo,
+		/obj/item/rcd_upgrade,
+		/obj/item/storage/part_replacer,
+		/obj/item/soap,
+		/obj/item/holosign_creator,
 	)
 	/// machines whitelisted from being shy with
 	var/list/shy_machine_whitelist = list(
@@ -181,7 +187,8 @@
 		equip_to_slot_or_del(storage, ITEM_SLOT_DEX_STORAGE)
 
 	for(var/holiday_name in GLOB.holidays)
-		var/obj/item/potential_hat
+		var/datum/holiday/holiday_today = GLOB.holidays[holiday_name]
+		var/obj/item/potential_hat = holiday_today.holiday_hat
 		if(!isnull(potential_hat) && isnull(default_headwear)) //If our drone type doesn't start with a hat, we take the holiday one.
 			default_headwear = potential_hat
 
@@ -255,7 +262,7 @@
 	alert_drones(DRONE_NET_DISCONNECT)
 
 
-/mob/living/basic/drone/gib()
+/mob/living/basic/drone/gib(no_brain, no_organs, no_bodyparts, safe_gib = TRUE)
 	dust()
 
 /mob/living/basic/drone/examine(mob/user)

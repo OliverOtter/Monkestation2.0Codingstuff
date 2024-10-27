@@ -1,11 +1,12 @@
 //Largely negative status effects go here, even if they have small benificial effects
 //STUN EFFECTS
 /datum/status_effect/incapacitating
-	tick_interval = 0
+	tick_interval = -1 // monkestation edit
 	status_type = STATUS_EFFECT_REPLACE
 	alert_type = null
 	remove_on_fullheal = TRUE
 	heal_flag_necessary = HEAL_CC_STATUS
+	processing_speed = STATUS_EFFECT_PRIORITY // monkestation edit: high-priority status effect processing
 	var/needs_update_stat = FALSE
 
 /datum/status_effect/incapacitating/on_creation(mob/living/new_owner, set_duration)
@@ -132,18 +133,24 @@
 	. = ..()
 	if(!.)
 		return
-	if(!HAS_TRAIT(owner, TRAIT_SLEEPIMMUNE))
-		ADD_TRAIT(owner, TRAIT_KNOCKEDOUT, TRAIT_STATUS_EFFECT(id))
+	if(HAS_TRAIT(owner, TRAIT_SLEEPIMMUNE))
 		tick_interval = -1
+	else
+		ADD_TRAIT(owner, TRAIT_KNOCKEDOUT, TRAIT_STATUS_EFFECT(id))
 	RegisterSignal(owner, SIGNAL_ADDTRAIT(TRAIT_SLEEPIMMUNE), PROC_REF(on_owner_insomniac))
 	RegisterSignal(owner, SIGNAL_REMOVETRAIT(TRAIT_SLEEPIMMUNE), PROC_REF(on_owner_sleepy))
+	RegisterSignal(owner, COMSIG_LIVING_DEATH, PROC_REF(on_owner_death))
 
 /datum/status_effect/incapacitating/sleeping/on_remove()
-	UnregisterSignal(owner, list(SIGNAL_ADDTRAIT(TRAIT_SLEEPIMMUNE), SIGNAL_REMOVETRAIT(TRAIT_SLEEPIMMUNE)))
+	UnregisterSignal(owner, list(SIGNAL_ADDTRAIT(TRAIT_SLEEPIMMUNE), SIGNAL_REMOVETRAIT(TRAIT_SLEEPIMMUNE), COMSIG_LIVING_DEATH))
 	if(!HAS_TRAIT(owner, TRAIT_SLEEPIMMUNE))
 		REMOVE_TRAIT(owner, TRAIT_KNOCKEDOUT, TRAIT_STATUS_EFFECT(id))
 		tick_interval = initial(tick_interval)
 	return ..()
+
+/datum/status_effect/incapacitating/sleeping/proc/on_owner_death(mob/living/source)
+	SIGNAL_HANDLER
+	qdel(src)
 
 ///If the mob is sleeping and gain the TRAIT_SLEEPIMMUNE we remove the TRAIT_KNOCKEDOUT and stop the tick() from happening
 /datum/status_effect/incapacitating/sleeping/proc/on_owner_insomniac(mob/living/source)
@@ -364,11 +371,10 @@
 
 /datum/status_effect/stacking/saw_bleed/threshold_cross_effect()
 	owner.adjustBruteLoss(bleed_damage)
-	var/turf/T = get_turf(owner)
-	new /obj/effect/temp_visual/bleed/explode(T)
+	new /obj/effect/temp_visual/bleed/explode(owner.loc)
 	for(var/d in GLOB.alldirs)
-		new /obj/effect/temp_visual/dir_setting/bloodsplatter(T, d)
-	playsound(T, SFX_DESECRATION, 100, TRUE, -1)
+		owner.do_splatter_effect(d)
+	playsound(owner, SFX_DESECRATION, 100, TRUE, -1)
 
 /datum/status_effect/stacking/saw_bleed/bloodletting
 	id = "bloodletting"
@@ -640,6 +646,7 @@
 	duration = 150
 	status_type = STATUS_EFFECT_REFRESH
 	alert_type = /atom/movable/screen/alert/status_effect/convulsing
+	show_duration = TRUE
 
 /datum/status_effect/convulsing/on_creation(mob/living/zappy_boy)
 	. = ..()
@@ -714,6 +721,13 @@
 	tick_interval = 1
 	alert_type = null
 	var/msg_stage = 0//so you dont get the most intense messages immediately
+
+/datum/status_effect/fake_virus/on_apply()
+	if(HAS_TRAIT(owner, TRAIT_VIRUSIMMUNE))
+		return FALSE
+	if(owner.stat != CONSCIOUS)
+		return FALSE
+	return TRUE
 
 /datum/status_effect/fake_virus/tick()
 	var/fake_msg = ""
@@ -843,6 +857,9 @@
 	icon_state = "antalert"
 
 /atom/movable/screen/alert/status_effect/ants/Click()
+	. = ..()
+	if(!.)
+		return
 	var/mob/living/living = owner
 	if(!istype(living) || !living.can_resist() || living != owner)
 		return

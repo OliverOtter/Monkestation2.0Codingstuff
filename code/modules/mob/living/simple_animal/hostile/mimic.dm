@@ -25,7 +25,7 @@
 	taunt_chance = 30
 
 	atmos_requirements = list("min_oxy" = 0, "max_oxy" = 0, "min_plas" = 0, "max_plas" = 0, "min_co2" = 0, "max_co2" = 0, "min_n2" = 0, "max_n2" = 0)
-	minbodytemp = 0
+	bodytemp_cold_damage_limit = -1
 
 	faction = list(FACTION_MIMIC)
 	move_to_delay = 9
@@ -234,7 +234,7 @@ GLOBAL_LIST_INIT(animatable_blacklist, list(/obj/structure/table, /obj/structure
 			projectiletype = initial(M.projectile_type)
 		if(istype(G, /obj/item/gun/ballistic))
 			Pewgun = G
-			var/obj/item/ammo_box/magazine/M = Pewgun.mag_type
+			var/obj/item/ammo_box/magazine/M = Pewgun.accepted_magazine_type
 			casingtype = initial(M.ammo_type)
 		if(istype(G, /obj/item/gun/energy))
 			Zapgun = G

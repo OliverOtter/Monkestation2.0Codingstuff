@@ -634,10 +634,9 @@
 	icon_file = 'icons/obj/clothing/neck.dmi'
 	json_config = 'code/datums/greyscale/json_configs/ties.json'
 
-/datum/greyscale_config/ties_worn
-	name = "Worn Ties"
+/datum/greyscale_config/ties/worn
+	name = "Ties (Worn)"
 	icon_file = 'icons/mob/clothing/neck.dmi'
-	json_config = 'code/datums/greyscale/json_configs/ties_worn.json'
 
 /datum/greyscale_config/heck_suit
 	name = "H.E.C.K. Suit"
@@ -698,6 +697,18 @@
 	name = "Worn Sundress"
 	icon_file = 'icons/mob/clothing/under/dress.dmi'
 	json_config = 'code/datums/greyscale/json_configs/sundress_worn.json'
+
+//MONKESTATION ADDITION START
+/datum/greyscale_config/ballgown
+	name = "Ballgown"
+	icon_file = 'icons/obj/clothing/under/dress.dmi'
+	json_config = 'code/datums/greyscale/json_configs/ballgown.json'
+
+/datum/greyscale_config/ballgown_worn
+	name = "Worn Ballgown"
+	icon_file = 'icons/mob/clothing/under/dress.dmi'
+	json_config = 'code/datums/greyscale/json_configs/ballgown_worn.json'
+//MONKESTATION ADDITION END
 
 /datum/greyscale_config/beanie
 	name = "Beanie"
@@ -1159,6 +1170,15 @@
 *	MASKS
 */
 
+/datum/greyscale_config/kitsune
+	name = "Kitsune mask"
+	icon_file = 'icons/obj/clothing/masks.dmi'
+	json_config = 'code/datums/greyscale/json_configs/kitsune.json'
+
+/datum/greyscale_config/kitsune/worn
+	name = "Kitsune mask (Worn)"
+	icon_file = 'icons/mob/clothing/mask.dmi'
+
 // BANDANAS
 
 /datum/greyscale_config/bandana_worn/snouted
@@ -1278,3 +1298,23 @@
 	name = "Worn Playbunny Ears"
 	icon_file = 'monkestation/icons/mob/clothing/head_32x48.dmi'
 	json_config = 'code/datums/greyscale/json_configs/playbunny_ears_worn.json'
+
+/datum/greyscale_config/big_manipulator
+	name = "Big Manipulator"
+	icon_file = 'monkestation/code/modules/factory_type_beat/icons/big_manipulator_core.dmi'
+	json_config = 'code/datums/greyscale/json_configs/big_manipulator.json'
+
+/datum/greyscale_config/manipulator_hand
+	name = "Manipulator Hand"
+	icon_file = 'monkestation/code/modules/factory_type_beat/icons/big_manipulator_hand.dmi'
+	json_config = 'code/datums/greyscale/json_configs/manipulator_hand.json'
+
+/datum/greyscale_config/linjacket
+	name = "Tassled Jacket"
+	icon_file = 'monkestation/icons/obj/clothing/necks.dmi'
+	json_config = 'code/datums/greyscale/json_configs/linjacket.json'
+
+/datum/greyscale_config/linjacket_worn
+	name = "Worn Tassled Jacket"
+	icon_file = 'monkestation/icons/mob/clothing/neck.dmi'
+	json_config = 'code/datums/greyscale/json_configs/linjacket_worn.json'

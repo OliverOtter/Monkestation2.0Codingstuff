@@ -1,7 +1,9 @@
 /mob/living/carbon/human/can_equip(obj/item/equip_target, slot, disable_warning = FALSE, bypass_equip_delay_self = FALSE, ignore_equipped = FALSE)
 	if(SEND_SIGNAL(src, COMSIG_HUMAN_EQUIPPING_ITEM, equip_target, slot) == COMPONENT_BLOCK_EQUIP)
 		return FALSE
-
+	if((slot & ITEM_SLOT_FEET) && HAS_TRAIT(src, TRAIT_NON_IMPORTANT_SHOE_BLOCK))
+		if(!istype(equip_target, /obj/item/clothing/shoes/mod))
+			return FALSE
 	return dna.species.can_equip(equip_target, slot, disable_warning, src, bypass_equip_delay_self, ignore_equipped)
 
 /mob/living/carbon/human/get_item_by_slot(slot_id)
@@ -229,11 +231,8 @@
 
 	return not_handled //For future deeper overrides
 
-/mob/living/carbon/human/equipped_speed_mods()
-	. = ..()
-	for(var/sloties in get_all_worn_items() - list(l_store, r_store, s_store))
-		var/obj/item/thing = sloties
-		. += thing?.slowdown
+/mob/living/carbon/human/get_equipped_speed_mod_items()
+	return ..() - list(l_store, r_store, s_store)
 
 /mob/living/carbon/human/doUnEquip(obj/item/I, force, newloc, no_move, invdrop = TRUE, silent = FALSE)
 	. = ..() //See mob.dm for an explanation on this and some rage about people copypasting instead of calling ..() like they should.
@@ -252,19 +251,19 @@
 				update_worn_undersuit()
 			update_worn_oversuit()
 	else if(I == w_uniform)
-		if(invdrop)
-			if(r_store)
-				dropItemToGround(r_store, TRUE) //Again, makes sense for pockets to drop.
-			if(l_store)
-				dropItemToGround(l_store, TRUE)
-			if(wear_id)
-				dropItemToGround(wear_id)
-			if(belt)
-				dropItemToGround(belt)
 		w_uniform = null
 		update_suit_sensors()
 		if(!QDELETED(src))
 			update_worn_undersuit()
+		if(invdrop)
+			if(r_store && !can_equip(r_store, ITEM_SLOT_RPOCKET, TRUE, ignore_equipped = TRUE))
+				dropItemToGround(r_store, TRUE) //Again, makes sense for pockets to drop.
+			if(l_store && !can_equip(l_store, ITEM_SLOT_LPOCKET, TRUE, ignore_equipped = TRUE))
+				dropItemToGround(l_store, TRUE)
+			if(wear_id && !can_equip(wear_id, ITEM_SLOT_ID, TRUE, ignore_equipped = TRUE))
+				dropItemToGround(wear_id)
+			if(belt && !can_equip(belt, ITEM_SLOT_BELT, TRUE, ignore_equipped = TRUE))
+				dropItemToGround(belt)
 	else if(I == gloves)
 		gloves = null
 		if(!QDELETED(src))

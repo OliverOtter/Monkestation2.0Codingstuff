@@ -8,6 +8,7 @@
 	antag_datum = /datum/antagonist/monsterhunter
 	protected_roles = list(
 		JOB_CAPTAIN,
+		JOB_BLUESHIELD,
 		JOB_HEAD_OF_PERSONNEL,
 		JOB_CHIEF_ENGINEER,
 		JOB_CHIEF_MEDICAL_OFFICER,
@@ -18,6 +19,7 @@
 		JOB_PRISONER,
 		JOB_SECURITY_OFFICER,
 		JOB_WARDEN,
+		JOB_BRIG_PHYSICIAN,
 	)
 	restricted_roles = list(
 		JOB_AI,

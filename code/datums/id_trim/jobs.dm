@@ -324,6 +324,7 @@
 		ACCESS_MINISAT,
 		ACCESS_RC_ANNOUNCE,
 		ACCESS_TCOMMS,
+		ACCESS_TCOMMS_ADMIN, // MONKESTATION ADDITION -- NTSL
 		ACCESS_TECH_STORAGE,
 		)
 	minimal_wildcard_access = list(
@@ -482,7 +483,7 @@
 	assignment = "Geneticist"
 	trim_state = "trim_geneticist"
 	department_color = COLOR_SCIENCE_PINK
-	subdepartment_color = COLOR_SCIENCE_PINK
+	subdepartment_color = COLOR_MEDICAL_BLUE
 	sechud_icon_state = SECHUD_GENETICIST
 	minimal_access = list(
 		ACCESS_GENETICS,

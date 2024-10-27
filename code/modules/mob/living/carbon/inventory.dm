@@ -134,6 +134,9 @@
 
 	return not_handled
 
+/mob/living/carbon/get_equipped_speed_mod_items()
+	return ..() + get_all_worn_items()
+
 /// This proc is called after an item has been successfully handled and equipped to a slot.
 /mob/living/carbon/proc/has_equipped(obj/item/item, slot, initial = FALSE)
 	return item.on_equipped(src, slot, initial)
@@ -362,7 +365,7 @@
  *
  * This handles creating an alert and adding an overlay to it
  */
-/mob/living/carbon/proc/give(mob/living/carbon/offered)
+/mob/living/proc/give(mob/living/offered)
 	if(has_status_effect(/datum/status_effect/offering))
 		to_chat(src, span_warning("You're already offering something!"))
 		return
@@ -397,7 +400,7 @@
 			to_chat(src, span_warning("You have to be beside [offered.p_them()]!"))
 			return
 	else
-		if(!(locate(/mob/living/carbon) in orange(1, src)))
+		if(!(locate(/mob/living) in orange(1, src)))
 			to_chat(src, span_warning("There's nobody beside you to take it!"))
 			return
 
@@ -418,7 +421,7 @@
  * * offerer - The person giving the original item
  * * I - The item being given by the offerer
  */
-/mob/living/carbon/proc/take(mob/living/carbon/offerer, obj/item/I)
+/mob/living/proc/take(mob/living/carbon/offerer, obj/item/I, visible_message = TRUE)
 	clear_alert("[offerer]")
 	if(IS_DEAD_OR_INCAP(src))
 		to_chat(src, span_warning("You're unable to take anything in your current state!"))
@@ -440,9 +443,13 @@
 		visible_message(span_notice("[offerer] tries to hand over [I] but it's stuck to them...."))
 		return
 
-	visible_message(span_notice("[src] takes [I] from [offerer]."), \
-					span_notice("You take [I] from [offerer]."))
+	if(visible_message)
+		visible_message(span_notice("[src] takes [I] from [offerer]."), \
+						span_notice("You take [I] from [offerer]."))
+	else
+		to_chat(src, span_notice("You take [I] from [offerer]."))
 	put_in_hands(I)
+	return TRUE
 
 ///Returns a list of all body_zones covered by clothing
 /mob/living/carbon/proc/get_covered_body_zones()

@@ -371,6 +371,9 @@
 /obj/structure/girder/deconstruct(disassembled = TRUE)
 	if(!(flags_1 & NODECONSTRUCT_1))
 		var/remains = pick(/obj/item/stack/rods, /obj/item/stack/sheet/iron)
+		var/area/shipbreak/A = get_area(src)
+		if(istype(A)) //shipbreaking
+			remains = /obj/item/stack/scrap/framing
 		new remains(loc)
 	qdel(src)
 
@@ -452,7 +455,7 @@
 				get_turf(src), RCD_MEMORY_WALL,
 			)
 		if(RCD_DECONSTRUCT)
-			return list("mode" = RCD_DECONSTRUCT, "delay" = 20, "cost" = 13)
+			return list("mode" = RCD_DECONSTRUCT, "delay" = 2 SECONDS, "cost" = 13)
 	return FALSE
 
 /obj/structure/girder/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, passed_mode)

@@ -67,7 +67,7 @@
 	 * Currently only used by mutantparts so don't worry about hair and stuff.
 	 * This is the source that this accessory will get its color from. Default is MUTCOLOR, but can also be HAIR, FACEHAIR, EYECOLOR and 0 if none.
 	 */
-	var/color_src = MUTCOLORS
+	var/color_src = MUTANT_COLOR
 	/// Decides if this sprite has an "inner" part, such as the fleshy parts on ears.
 	var/hasinner = FALSE
 	/// Is this part locked from roundstart selection? Used for parts that apply effects.
@@ -80,6 +80,11 @@
 	var/dimension_y = 32
 	/// Should this sprite block emissives?
 	var/em_block = FALSE
+
+	var/datum/color_palette/palette
+	var/palette_key
+	var/fallback_key
+	var/list/layers
 
 /datum/sprite_accessory/blank
 	name = "None"
@@ -1780,7 +1785,8 @@ MONKESTATION EDIT
 	name = "Cat"
 	icon = 'icons/mob/species/human/cat_features.dmi'
 	icon_state = "default"
-	color_src = HAIR
+	palette = /datum/color_palette/generic_colors
+	palette_key = MUTANT_COLOR
 
 /datum/sprite_accessory/tails/monkey
 	name = "Monkey"
@@ -1891,15 +1897,17 @@ MONKESTATION EDIT
 	name = "Cat"
 	icon_state = "cat"
 	hasinner = TRUE
-	color_src = HAIR
+	palette = /datum/color_palette/generic_colors
+	palette_key = HAIR_COLOR
 
 /datum/sprite_accessory/ears/fox
 	icon = 'icons/mob/species/human/fox_features.dmi'
 	name = "Fox"
 	icon_state = "fox"
 	hasinner = TRUE
-	color_src = HAIR
 	locked = TRUE
+	palette = /datum/color_palette/generic_colors
+	palette_key = MUTANT_COLOR
 
 /datum/sprite_accessory/wings/none
 	name = "None"
@@ -2092,8 +2100,9 @@ MONKESTATION EDIT
 
 /datum/sprite_accessory/caps
 	icon = 'icons/mob/species/mush_cap.dmi'
-	color_src = HAIR
 	em_block = TRUE
+	palette = /datum/color_palette/generic_colors
+	palette_key = MUTANT_COLOR
 
 /datum/sprite_accessory/caps/round
 	name = "Round"

@@ -434,7 +434,7 @@
 
 /obj/machinery/firealarm/rcd_vals(mob/user, obj/item/construction/rcd/the_rcd)
 	if((buildstage == ALARM_NO_CIRCUIT) && (the_rcd.upgrade & RCD_UPGRADE_SIMPLE_CIRCUITS))
-		return list("mode" = RCD_WALLFRAME, "delay" = 20, "cost" = 1)
+		return list("mode" = RCD_WALLFRAME, "delay" = 2 SECONDS, "cost" = 1)
 	return FALSE
 
 /obj/machinery/firealarm/rcd_act(mob/user, obj/item/construction/rcd/the_rcd, passed_mode)
@@ -509,8 +509,12 @@
 	my_area.fire_detect = !my_area.fire_detect
 	for(var/obj/machinery/firealarm/fire_panel in my_area.firealarms)
 		fire_panel.update_icon()
-	to_chat(user, span_notice("You [ my_area.fire_detect ? "enable" : "disable" ] the local firelock thermal sensors!"))
-	user.log_message("[ my_area.fire_detect ? "enabled" : "disabled" ] firelock sensors using [src].", LOG_GAME)
+	// Used to force all the firelocks to update, if the zone is not manually activated
+	if (my_area.fault_status != AREA_FAULT_MANUAL)
+		reset() // Don't send user to prevent double balloon_alert() and the action is already logged in this proc.
+	if (user)
+		balloon_alert(user, "thermal sensors [my_area.fire_detect ? "enabled" : "disabled"]")
+		user.log_message("[ my_area.fire_detect ? "enabled" : "disabled" ] firelock sensors using [src].", LOG_GAME)
 
 MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/firealarm, 26)
 

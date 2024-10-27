@@ -277,13 +277,13 @@
 	return hands
 
 /mob/living/carbon/get_fire_overlay(stacks, on_fire)
-	var/fire_icon = "[dna?.species.fire_overlay || "human"]_[stacks > MOB_BIG_FIRE_STACK_THRESHOLD ? "big_fire" : "small_fire"]"
+	var/fire_icon = "[dna?.species?.fire_overlay || "human"]_[stacks > MOB_BIG_FIRE_STACK_THRESHOLD ? "big_fire" : "small_fire"]"
 
 	if(!GLOB.fire_appearances[fire_icon])
 		GLOB.fire_appearances[fire_icon] = mutable_appearance(
-			'icons/mob/effects/onfire.dmi',
-			fire_icon,
-			-HIGHEST_LAYER,
+			icon = dna?.species?.fire_dmi || 'icons/mob/effects/onfire.dmi',
+			icon_state = fire_icon,
+			layer = -HIGHEST_LAYER,
 			appearance_flags = RESET_COLOR,
 		)
 
@@ -292,46 +292,34 @@
 /mob/living/carbon/update_damage_overlays()
 	remove_overlay(DAMAGE_LAYER)
 
-	var/mutable_appearance/damage_overlay = mutable_appearance('icons/mob/effects/dam_mob.dmi', "blank", -DAMAGE_LAYER)
-	overlays_standing[DAMAGE_LAYER] = damage_overlay
-
+	var/mutable_appearance/damage_overlay
 	for(var/obj/item/bodypart/iter_part as anything in bodyparts)
-		if(iter_part.dmg_overlay_type)
-			if(iter_part.brutestate)
-				damage_overlay.add_overlay("[iter_part.dmg_overlay_type]_[iter_part.body_zone]_[iter_part.brutestate]0") //we're adding icon_states of the base image as overlays
-			if(iter_part.burnstate)
-				damage_overlay.add_overlay("[iter_part.dmg_overlay_type]_[iter_part.body_zone]_0[iter_part.burnstate]")
+		var/list/part_overlays = iter_part.get_bodypart_damage_state()
+		if(!LAZYLEN(part_overlays))
+			continue
 
-	var/mob/living/carbon/human/human = src
-	if(human)
-		var/height = human.get_mob_height()
-		if(height == HUMAN_HEIGHT_DWARF)
-			height += 2
-		height = num2text(height)
-		var/offsets = GLOB.human_heights_to_offsets[height]
-		damage_overlay.pixel_y += offsets[1]
+		damage_overlay ||= mutable_appearance(layer = -DAMAGE_LAYER)
+		damage_overlay.overlays += part_overlays
 
+	if(isnull(damage_overlay))
+		return
+
+	overlays_standing[DAMAGE_LAYER] = damage_overlay
 	apply_overlay(DAMAGE_LAYER)
 
 /mob/living/carbon/update_wound_overlays()
 	remove_overlay(WOUND_LAYER)
 
-	var/mutable_appearance/wound_overlay = mutable_appearance('icons/mob/effects/bleed_overlays.dmi', "blank", -WOUND_LAYER)
-	overlays_standing[WOUND_LAYER] = wound_overlay
-
+	var/mutable_appearance/wound_overlay
 	for(var/obj/item/bodypart/iter_part as anything in bodyparts)
 		if(iter_part.bleed_overlay_icon)
+			wound_overlay ||= mutable_appearance('icons/mob/effects/bleed_overlays.dmi', "blank", -WOUND_LAYER, appearance_flags = KEEP_TOGETHER)
 			wound_overlay.add_overlay(iter_part.bleed_overlay_icon)
 
-	var/mob/living/carbon/human/human = src
-	if(human)
-		var/height = human.get_mob_height()
-		if(height == HUMAN_HEIGHT_DWARF)
-			height += 2
-		height = num2text(height)
-		var/offsets = GLOB.human_heights_to_offsets[height]
-		wound_overlay.pixel_y += offsets[1]
+	if(isnull(wound_overlay))
+		return
 
+	overlays_standing[WOUND_LAYER] = wound_overlay
 	apply_overlay(WOUND_LAYER)
 
 /mob/living/carbon/update_worn_mask()
@@ -377,6 +365,14 @@
 		update_hud_back(back)
 
 	apply_overlay(BACK_LAYER)
+
+/mob/living/carbon/update_worn_legcuffs()
+	remove_overlay(LEGCUFF_LAYER)
+	clear_alert("legcuffed")
+	if(legcuffed)
+		overlays_standing[LEGCUFF_LAYER] = mutable_appearance('icons/mob/simple/mob.dmi', "legcuff1", -LEGCUFF_LAYER)
+		apply_overlay(LEGCUFF_LAYER)
+		throw_alert("legcuffed", /atom/movable/screen/alert/restrained/legcuffed, new_master = src.legcuffed)
 
 /mob/living/carbon/update_worn_head()
 	remove_overlay(HEAD_LAYER)
@@ -440,7 +436,7 @@
 	RETURN_TYPE(/list)
 
 	. = list()
-	if(blocks_emissive != EMISSIVE_BLOCK_NONE)
+	if(blocks_emissive != EMISSIVE_BLOCK_NONE && standing)
 		. += emissive_blocker(standing.icon, standing.icon_state, src, alpha = standing.alpha)
 	SEND_SIGNAL(src, COMSIG_ITEM_GET_WORN_OVERLAYS, ., standing, isinhands, icon_file)
 
@@ -555,27 +551,41 @@
 
 /obj/item/bodypart/head/generate_icon_key()
 	. = ..()
-	. += "-[facial_hairstyle]"
-	. += "-[facial_hair_color]"
-	if(facial_hair_gradient_style)
-		. += "-[facial_hair_gradient_style]"
-		if(hair_gradient_color)
-			. += "-[facial_hair_gradient_color]"
+	if(lip_style)
+		. += "-[lip_style]"
+		. += "-[lip_color]"
 	if(facial_hair_hidden)
 		. += "-FACIAL_HAIR_HIDDEN"
+	else
+		. += "-[facial_hairstyle]"
+		. += "-[override_hair_color || fixed_hair_color || facial_hair_color]"
+		. += "-[facial_hair_alpha]"
+		if(facial_hair_gradient_style)
+			. += "-[facial_hair_gradient_style]"
+			. += "-[facial_hair_gradient_color]"
+	if(show_missing_eyes)
+		. += "-SHOW_MISSING_EYES"
 	if(show_debrained)
 		. += "-SHOW_DEBRAINED"
 		return .
-
-	. += "-[hair_style]"
-	. += "-[fixed_hair_color || override_hair_color || hair_color]"
-	if(hair_gradient_style)
-		. += "-[hair_gradient_style]"
-		if(hair_gradient_color)
-			. += "-[hair_gradient_color]"
 	if(hair_hidden)
 		. += "-HAIR_HIDDEN"
+	else
+		. += "-[hair_style]"
+		. += "-[override_hair_color || fixed_hair_color || hair_color]"
+		. += "-[hair_alpha]"
+		if(hair_gradient_style)
+			. += "-[hair_gradient_style]"
+			. += "-[hair_gradient_color]"
 
+	return .
+
+/obj/item/bodypart/head/generate_husk_key()
+	. = ..()
+	if(show_missing_eyes)
+		. += "-SHOW_MISSING_EYES"
+	if(show_debrained)
+		. += "-SHOW_DEBRAINED"
 	return .
 
 GLOBAL_LIST_EMPTY(masked_leg_icons_cache)

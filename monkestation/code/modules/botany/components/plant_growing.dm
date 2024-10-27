@@ -45,7 +45,7 @@
 		managed_seeds["[i]"] = null
 
 	///we create reagents using max_reagents, then make it visible and an open container
-	movable_parent.create_reagents(max_reagents, (OPENCONTAINER | AMOUNT_VISIBLE))
+	movable_parent.create_reagents(max_reagents, (REFILLABLE | DRAINABLE)) // We don't use OPENCONTAINER, as there's no need for it to be transparent, we have our own examine info handler
 
 	RegisterSignals(parent, list(COMSIG_TRY_PLANT_SEED, COMSIG_ATOM_ATTACKBY), PROC_REF(try_plant_seed))
 	RegisterSignal(parent, COMSIG_TRY_POLLINATE, PROC_REF(try_pollinate))
@@ -126,9 +126,9 @@
 
 	if(movable_parent.reagents.total_volume > 5)
 		if(bio_boosted)
-			movable_parent.reagents.remove_any(max(1,round(movable_parent.reagents.total_volume * 0.01, CHEMICAL_QUANTISATION_LEVEL)))
+			movable_parent.reagents.remove_all(max(1,round(movable_parent.reagents.total_volume * 0.01, CHEMICAL_QUANTISATION_LEVEL)))
 		else
-			movable_parent.reagents.remove_any(max(1,round(movable_parent.reagents.total_volume * 0.025, CHEMICAL_QUANTISATION_LEVEL)))
+			movable_parent.reagents.remove_all(max(1,round(movable_parent.reagents.total_volume * 0.025, CHEMICAL_QUANTISATION_LEVEL)))
 
 	SEND_SIGNAL(movable_parent, COMSIG_NUTRIENT_UPDATE, movable_parent.reagents.total_volume / movable_parent.reagents.maximum_volume)
 
@@ -248,7 +248,7 @@
 	return TRUE
 
 /datum/component/plant_growing/proc/adjust_selfgrow(datum/source, amount)
-	self_sustaining_precent = clamp(self_sustaining_precent + amount, 0, 10)
+	self_sustaining_precent = clamp(self_sustaining_precent + amount, 0, 100)
 
 /datum/component/plant_growing/proc/increase_work_processes(datum/source, amount)
 	next_work -= amount

@@ -55,6 +55,10 @@ GLOBAL_LIST_INIT(loadout_glasses, generate_loadout_items(/datum/loadout_item/gla
 	name = "Jamjar Glasses"
 	item_path = /obj/item/clothing/glasses/regular/jamjar
 
+/datum/loadout_item/glasses/prescription_glasses/betterunshit
+    name = "modern glasses"
+    item_path = /obj/item/clothing/glasses/regular/betterunshit
+
 /*
 *	COSMETIC GLASSES
 */
@@ -89,7 +93,7 @@ GLOBAL_LIST_INIT(loadout_glasses, generate_loadout_items(/datum/loadout_item/gla
 
 /datum/loadout_item/glasses/eyepatch
 	name = "Eyepatch"
-	item_path = /obj/item/clothing/glasses/
+	item_path = /obj/item/clothing/glasses/eyepatch
 
 /datum/loadout_item/glasses/eyepatch_medical
 	name = "Medical Eyepatch"

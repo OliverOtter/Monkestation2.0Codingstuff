@@ -12,9 +12,10 @@
 		Higher levels increase the knockdown dealt to enemies.\n\
 		At level 4, you will no longer spin, but you will be limited to tackling from only 6 tiles away."
 	power_flags = NONE
-	check_flags = BP_CANT_USE_IN_TORPOR|BP_CANT_USE_IN_FRENZY|BP_CANT_USE_WHILE_INCAPACITATED|BP_CANT_USE_WHILE_UNCONSCIOUS
-	purchase_flags = BLOODSUCKER_CAN_BUY|VASSAL_CAN_BUY
+	check_flags = BP_CANT_USE_IN_TORPOR | BP_CANT_USE_IN_FRENZY | BP_CANT_USE_WHILE_INCAPACITATED | BP_CANT_USE_WHILE_UNCONSCIOUS
+	purchase_flags = BLOODSUCKER_CAN_BUY | VASSAL_CAN_BUY
 	bloodcost = 10
+	sol_multiplier = 15
 	cooldown_time = 10 SECONDS
 	power_activates_immediately = FALSE
 
@@ -29,10 +30,10 @@
 	if(!.)
 		return FALSE
 	// Are we being grabbed?
-	if(user.pulledby && user.pulledby.grab_state >= GRAB_AGGRESSIVE)
+	if(!QDELETED(user.pulledby) && user.pulledby.grab_state >= GRAB_AGGRESSIVE)
 		owner.balloon_alert(user, "grabbed!")
 		return FALSE
-	if(user.pulling)
+	if(!QDELETED(user.pulling))
 		owner.balloon_alert(user, "grabbing someone!")
 		return FALSE
 	return TRUE

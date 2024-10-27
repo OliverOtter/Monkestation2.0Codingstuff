@@ -57,6 +57,7 @@
 	flags_inv = NONE
 	flags_cover = NONE
 	item_flags = EXAMINE_SKIP
+	clothing_flags = STOPSPRESSUREDAMAGE
 	armor_type = /datum/armor/cult_hoodie_void
 
 /datum/armor/cult_hoodie_void
@@ -80,6 +81,7 @@
 	allowed = list(/obj/item/melee/sickly_blade)
 	hoodtype = /obj/item/clothing/head/hooded/cult_hoodie/void
 	flags_inv = NONE
+	clothing_flags = STOPSPRESSUREDAMAGE
 	body_parts_covered = CHEST|GROIN|ARMS
 	// slightly worse than normal cult robes
 	armor_type = /datum/armor/cultrobes_void
@@ -108,12 +110,12 @@
 	. = ..()
 	UnregisterSignal(user, list(COMSIG_MOB_UNEQUIPPED_ITEM, COMSIG_MOB_EQUIPPED_ITEM))
 
-/obj/item/clothing/suit/hooded/cultrobes/void/proc/hide_item(obj/item/item, slot)
+/obj/item/clothing/suit/hooded/cultrobes/void/proc/hide_item(datum/source, obj/item/item, slot)
 	SIGNAL_HANDLER
 	if(slot & ITEM_SLOT_SUITSTORE)
 		ADD_TRAIT(item, TRAIT_NO_STRIP, REF(src)) // i'd use examine hide but its a flag and yeah
 
-/obj/item/clothing/suit/hooded/cultrobes/void/proc/show_item(obj/item/item, slot)
+/obj/item/clothing/suit/hooded/cultrobes/void/proc/show_item(datum/source, obj/item/item, slot)
 	SIGNAL_HANDLER
 	REMOVE_TRAIT(item, TRAIT_NO_STRIP, REF(src))
 

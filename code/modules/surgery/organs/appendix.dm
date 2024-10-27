@@ -47,6 +47,12 @@
 	if(owner)
 		ADD_TRAIT(owner, TRAIT_DISEASELIKE_SEVERITY_MEDIUM, type)
 		owner.med_hud_set_status()
+		notify_ghosts(
+			"[owner] has developed spontaneous appendicitis!",
+			source = owner,
+			action = NOTIFY_ORBIT,
+			header = "Whoa, Sick!",
+		)
 
 /obj/item/organ/internal/appendix/proc/inflamation(seconds_per_tick)
 	var/mob/living/carbon/organ_owner = owner
@@ -83,11 +89,13 @@
 		ADD_TRAIT(organ_owner, TRAIT_DISEASELIKE_SEVERITY_MEDIUM, type)
 		organ_owner.med_hud_set_status()
 
-/obj/item/organ/internal/appendix/get_status_text()
-	if((!(organ_flags & ORGAN_FAILING)) && inflamation_stage)
-		return "<font color='#ff9933'>Inflamed</font>"
-	else
-		return ..()
+/obj/item/organ/internal/appendix/get_status_text(advanced, add_tooltips)
+	if(!(organ_flags & ORGAN_FAILING) && inflamation_stage)
+		. = "<font color='#ff9933'>Inflamed</font>"
+		if(add_tooltips)
+			. = span_tooltip("Remove surgically.", .)
+		return .
+	return ..()
 
 #undef APPENDICITIS_PROB
 #undef INFLAMATION_ADVANCEMENT_PROB

@@ -17,6 +17,9 @@
 	zone = BODY_ZONE_CHEST
 	organ_flags = ORGAN_UNREMOVABLE
 
+/obj/item/organ/internal/tongue/jelly/get_possible_languages()
+	return ..() + /datum/language/slime
+
 /obj/item/organ/internal/lungs/slime
 	zone = BODY_ZONE_CHEST
 	organ_flags = ORGAN_UNREMOVABLE
@@ -30,6 +33,7 @@
 	name = "endoplasmic reticulum"
 	zone = BODY_ZONE_CHEST
 	organ_flags = ORGAN_UNREMOVABLE
+	organ_traits = list(TRAIT_TOXINLOVER)
 
 /obj/item/organ/internal/liver/slime/on_life(seconds_per_tick, times_fired)
 	. = ..()
@@ -48,10 +52,13 @@
 	name = "core"
 	desc = "The center core of a slimeperson, technically their 'extract.' Where the cytoplasm, membrane, and organelles come from; perhaps this is also a mitochondria?"
 	zone = BODY_ZONE_CHEST
-	var/obj/effect/death_melt_type = /obj/effect/temp_visual/wizard/out
-	var/core_color = COLOR_WHITE
 	icon = 'monkestation/code/modules/smithing/icons/oozeling.dmi'
 	icon_state = "slime_core"
+	resistance_flags = FIRE_PROOF
+
+	var/obj/effect/death_melt_type = /obj/effect/temp_visual/wizard/out
+	var/core_color = COLOR_WHITE
+
 	var/core_ejected = FALSE
 	var/gps_active = TRUE
 
@@ -106,8 +113,9 @@
 	RegisterSignal(organ_owner, COMSIG_MOB_STATCHANGE, PROC_REF(on_stat_change))
 
 /obj/item/organ/internal/brain/slime/proc/colorize()
-	if(owner && isoozeling(owner))
-		core_color = owner.dna.features["mcolor"]
+	if(isoozeling(owner))
+		var/datum/color_palette/generic_colors/located = owner.dna.color_palettes[/datum/color_palette/generic_colors]
+		core_color = located.return_color(MUTANT_COLOR)
 		add_atom_colour(core_color, FIXED_COLOUR_PRIORITY)
 
 /obj/item/organ/internal/brain/slime/proc/on_stat_change(mob/living/victim, new_stat, turf/loc_override)
@@ -120,9 +128,7 @@
 
 /obj/item/organ/internal/brain/slime/proc/enable_coredeath()
 	coredeath = TRUE
-	if(owner)
-		if(owner.stat != DEAD)
-			return
+	if(owner?.stat == DEAD)
 		addtimer(CALLBACK(src, PROC_REF(core_ejection), owner), 0)
 
 ///////
@@ -132,7 +138,7 @@
 /obj/item/organ/internal/brain/slime/proc/core_ejection(mob/living/carbon/human/victim, new_stat, turf/loc_override)
 	if(core_ejected || !coredeath)
 		return
-	if(!stored_dna)
+	if(QDELETED(stored_dna))
 		stored_dna = new
 
 	victim.dna.copy_dna(stored_dna)
@@ -140,12 +146,10 @@
 	victim.visible_message(span_warning("[victim]'s body completely dissolves, collapsing outwards!"), span_notice("Your body completely dissolves, collapsing outwards!"), span_notice("You hear liquid splattering."))
 	var/turf/death_turf = get_turf(victim)
 
-	var/list/items = list()
-	items |= victim.get_equipped_items(TRUE)
-	for(var/atom/movable/I as anything in items)
-		victim.dropItemToGround(I)
-		stored_items |= I
-		I.forceMove(src)
+	for(var/atom/movable/item as anything in victim.get_equipped_items(include_pockets = TRUE))
+		victim.dropItemToGround(item)
+		stored_items |= item
+		item.forceMove(src)
 
 	if(victim.get_organ_slot(ORGAN_SLOT_BRAIN) == src)
 		Remove(victim)
@@ -166,15 +170,16 @@
 		if(target_ling)
 			if(target_ling.oozeling_revives > 0)
 				target_ling.oozeling_revives--
-				addtimer(CALLBACK(src, PROC_REF(rebuild_body)), 30 SECONDS)
+				addtimer(CALLBACK(src, PROC_REF(rebuild_body), null, FALSE), 30 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE | TIMER_DELETE_ME)
 
 		if(IS_BLOODSUCKER(brainmob))
 			var/datum/antagonist/bloodsucker/target_bloodsucker = brainmob.mind.has_antag_datum(/datum/antagonist/bloodsucker)
-			if(target_bloodsucker.bloodsucker_blood_volume >= target_bloodsucker.max_blood_volume * 0.4)
-				addtimer(CALLBACK(src, PROC_REF(rebuild_body)), 30 SECONDS)
-				target_bloodsucker.bloodsucker_blood_volume -= target_bloodsucker.max_blood_volume * 0.15
+			if(target_bloodsucker.bloodsucker_blood_volume >= OOZELING_MIN_REVIVE_BLOOD_THRESHOLD)
+				addtimer(CALLBACK(src, PROC_REF(rebuild_body), null, FALSE), 30 SECONDS, TIMER_UNIQUE | TIMER_OVERRIDE | TIMER_DELETE_ME)
+				target_bloodsucker.bloodsucker_blood_volume -= (OOZELING_MIN_REVIVE_BLOOD_THRESHOLD * 0.5)
 
 	rebuilt = FALSE
+	victim.transfer_observers_to(src)
 	Remove(victim)
 	qdel(victim)
 
@@ -188,66 +193,219 @@
 /// Makes it so that when a slime's core has plasma poured on it, it builds a new body and moves the brain into it.
 
 /obj/item/organ/internal/brain/slime/check_for_repair(obj/item/item, mob/user)
-	if(damage && item.is_drainable() && item.reagents.has_reagent(/datum/reagent/toxin/plasma) && item.reagents.get_reagent_amount(/datum/reagent/toxin/plasma) >= 100) //attempt to heal the brain
+	if(damage && item.is_drainable() && item.reagents.has_reagent(/datum/reagent/toxin/plasma)) //attempt to heal the brain
+		if (item.reagents.get_reagent_amount(/datum/reagent/toxin/plasma) < 100)
+			user.balloon_alert(user, "too little plasma!")
+			return FALSE
 
-		user.visible_message(span_notice("[user] starts to slowly pour the contents of [item] onto [src]. It seems to bubble and roil, beginning to stretch its cytoskeleton outwards..."), span_notice("You start to slowly pour the contents of [item] onto [src]. It seems to bubble and roil, beginning to stretch its membrane outwards..."))
+		user.visible_message(
+			span_notice("[user] starts to slowly pour the contents of [item] onto [src]. It seems to bubble and roil, beginning to stretch its cytoskeleton outwards..."),
+			span_notice("You start to slowly pour the contents of [item] onto [src]. It seems to bubble and roil, beginning to stretch its membrane outwards..."),
+			span_hear("You hear bubbling.")
+			)
+
 		if(!do_after(user, 30 SECONDS, src))
 			to_chat(user, span_warning("You failed to pour the contents of [item] onto [src]!"))
-			return TRUE
+			return FALSE
 
-		user.visible_message(span_notice("[user] pours the contents of [item] onto [src], causing it to form a proper cytoplasm and outer membrane."), span_notice("You pour the contents of [item] onto [src], causing it to form a proper cytoplasm and outer membrane."))
-		item.reagents.clear_reagents() //removes the whole shit
-		rebuild_body()
+		if (item.reagents.get_reagent_amount(/datum/reagent/toxin/plasma) < 100) // minor exploit but might as well patch it
+			user.balloon_alert(user, "too little plasma!")
+			return FALSE
+
+		user.visible_message(
+			span_notice("[user] pours the contents of [item] onto [src], causing it to form a proper cytoplasm and outer membrane."),
+			span_notice("You pour the contents of [item] onto [src], causing it to form a proper cytoplasm and outer membrane."),
+			span_hear("You hear a splat.")
+			)
+
+		item.reagents.remove_reagent(/datum/reagent/toxin/plasma, 100)
+		rebuild_body(user)
 		return TRUE
-	return FALSE
+	return ..()
 
 /obj/item/organ/internal/brain/slime/proc/drop_items_to_ground(turf/turf)
 	for(var/atom/movable/item as anything in stored_items)
 		item.forceMove(turf)
-		stored_items -= item
+	stored_items.Cut()
 
-/obj/item/organ/internal/brain/slime/proc/rebuild_body()
+/obj/item/organ/internal/brain/slime/proc/rebuild_body(mob/user, nugget = TRUE) as /mob/living/carbon/human
+	RETURN_TYPE(/mob/living/carbon/human)
 	if(rebuilt)
-		return
-	rebuilt = TRUE
-	set_organ_damage(-maxHealth) //heals 2 damage per unit of mannitol, and by using "set_organ_damage", we clear the failing variable if that was up
+		return owner
+	set_organ_damage(-maxHealth) // heals the brain fully
 
 	if(gps_active) // making sure the gps signal is removed if it's active on revival
 		gps_active = FALSE
 		qdel(GetComponent(/datum/component/gps))
 
 	//we have the plasma. we can rebuild them.
-	var/mob/living/carbon/human/new_body = new /mob/living/carbon/human(src.loc)
+	brainmob?.mind?.grab_ghost()
+	if(isnull(brainmob))
+		user?.balloon_alert(user, "This brain is not a viable candidate for repair!")
+		return null
+	if(isnull(brainmob.stored_dna))
+		user?.balloon_alert(user, "This brain does not contain any dna!")
+		return null
+	if(isnull(brainmob.client))
+		user?.balloon_alert(user, "This brain does not contain a mind!")
+		return null
+	var/mob/living/carbon/human/new_body = new /mob/living/carbon/human(drop_location())
 
+	rebuilt = TRUE
+	brainmob.client?.prefs?.safe_transfer_prefs_to(new_body)
 	new_body.underwear = "Nude"
-	new_body.undershirt = "Nude" //Which undershirt the player wants
-	new_body.socks = "Nude" //Which socks the player wants
-	stored_dna.transfer_identity(new_body, transfer_SE=1)
-	new_body.dna.features["mcolor"] = new_body.dna.features["mcolor"]
-	new_body.dna.update_uf_block(DNA_MUTANT_COLOR_BLOCK)
+	new_body.undershirt = "Nude"
+	new_body.socks = "Nude"
+	stored_dna.transfer_identity(new_body, transfer_SE = TRUE)
 	new_body.real_name = new_body.dna.real_name
 	new_body.name = new_body.dna.real_name
-	new_body.updateappearance(mutcolor_update=1)
+	new_body.updateappearance(mutcolor_update = TRUE)
 	new_body.domutcheck()
-	new_body.forceMove(get_turf(src))
-	new_body.blood_volume = BLOOD_VOLUME_SAFE+60
+	new_body.forceMove(drop_location())
+	if(!nugget)
+		new_body.set_nutrition(NUTRITION_LEVEL_FED)
+	new_body.blood_volume = nugget ? (BLOOD_VOLUME_SAFE + 60) : BLOOD_VOLUME_NORMAL
 	REMOVE_TRAIT(new_body, TRAIT_NO_TRANSFORM, REF(src))
-	if(brainmob)
+	if(!QDELETED(brainmob))
 		SSquirks.AssignQuirks(new_body, brainmob.client)
 	var/obj/item/organ/internal/brain/new_body_brain = new_body.get_organ_slot(ORGAN_SLOT_BRAIN)
 	qdel(new_body_brain)
-	src.forceMove(new_body)
+	forceMove(new_body)
 	Insert(new_body)
-	for(var/obj/item/bodypart/bodypart as anything in new_body.bodyparts)
-		if(!istype(bodypart, /obj/item/bodypart/chest))
+	if(nugget)
+		for(var/obj/item/bodypart as anything in new_body.bodyparts)
+			if(istype(bodypart, /obj/item/bodypart/chest))
+				continue
 			qdel(bodypart)
-			continue
+		new_body.visible_message(span_warning("[new_body]'s torso \"forms\" from [new_body.p_their()] core, yet to form the rest."))
+		to_chat(owner, span_purple("Your torso fully forms out of your core, yet to form the rest."))
+	else
+		new_body.visible_message(span_warning("[new_body]'s body fully forms from [new_body.p_their()] core!"))
+		to_chat(owner, span_purple("Your body fully forms from your core!"))
 
-	new_body.visible_message(span_warning("[new_body]'s torso \"forms\" from their core, yet to form the rest."))
-	to_chat(owner, span_purple("Your torso fully forms out of your core, yet to form the rest."))
+	brainmob?.mind?.transfer_to(new_body)
+	new_body.grab_ghost()
+	transfer_observers_to(new_body)
 
-	if(brainmob)
-		brainmob.mind.transfer_to(new_body)
-		new_body.grab_ghost()
+	drop_items_to_ground(new_body.drop_location())
+	return new_body
 
-	drop_items_to_ground(get_turf(new_body))
+
+///The rate at which slimes regenerate their jelly normally
+#define JELLY_REGEN_RATE 1.5
+///The rate at which slimes regenerate their jelly when they completely run out of it and start taking damage, usually after having cannibalized all their limbs already
+#define JELLY_REGEN_RATE_EMPTY 2.5
+///The blood volume at which slimes begin to start losing nutrition -- so that IV drips can work for blood deficient slimes
+#define BLOOD_VOLUME_LOSE_NUTRITION 550
+
+
+/obj/item/organ/internal/heart/slime
+	name = "slime heart"
+
+	heart_bloodtype = /datum/blood_type/slime
+	var/datum/action/innate/regenerate_limbs/regenerate_limbs
+
+/obj/item/organ/internal/heart/slime/Insert(mob/living/carbon/receiver, special, drop_if_replaced)
+	. = ..()
+	regenerate_limbs = new
+	regenerate_limbs.Grant(receiver)
+	RegisterSignal(receiver, COMSIG_HUMAN_ON_HANDLE_BLOOD, PROC_REF(slime_blood))
+
+/obj/item/organ/internal/heart/slime/Remove(mob/living/carbon/heartless, special)
+	. = ..()
+	if(regenerate_limbs)
+		regenerate_limbs.Remove(heartless)
+		qdel(regenerate_limbs)
+	UnregisterSignal(heartless, COMSIG_HUMAN_ON_HANDLE_BLOOD)
+
+/obj/item/organ/internal/heart/slime/proc/slime_blood(mob/living/carbon/human/slime, seconds_per_tick, times_fired)
+	SIGNAL_HANDLER
+
+	if(slime.stat == DEAD)
+		return NONE
+
+	. = HANDLE_BLOOD_NO_NUTRITION_DRAIN|HANDLE_BLOOD_NO_EFFECTS
+
+	if(slime.blood_volume <= 0)
+		slime.blood_volume += JELLY_REGEN_RATE_EMPTY * seconds_per_tick
+		slime.adjustBruteLoss(2.5 * seconds_per_tick)
+		to_chat(slime, span_danger("You feel empty!"))
+
+	if(slime.blood_volume < BLOOD_VOLUME_NORMAL)
+		if(slime.nutrition >= NUTRITION_LEVEL_STARVING)
+			slime.blood_volume += JELLY_REGEN_RATE * seconds_per_tick
+			if(slime.blood_volume <= BLOOD_VOLUME_LOSE_NUTRITION) // don't lose nutrition if we are above a certain threshold, otherwise slimes on IV drips will still lose nutrition
+				slime.adjust_nutrition(-1.25 * seconds_per_tick)
+
+	if(HAS_TRAIT(slime, TRAIT_BLOOD_DEFICIENCY))
+		var/datum/quirk/blooddeficiency/blooddeficiency = slime.get_quirk(/datum/quirk/blooddeficiency)
+		blooddeficiency?.lose_blood(slime, seconds_per_tick)
+
+	if(slime.blood_volume < BLOOD_VOLUME_OKAY)
+		if(SPT_PROB(2.5, seconds_per_tick))
+			to_chat(slime, span_danger("You feel drained!"))
+
+	if(slime.blood_volume < BLOOD_VOLUME_BAD)
+		Cannibalize_Body(slime)
+
+	regenerate_limbs?.build_all_button_icons(UPDATE_BUTTON_STATUS)
+	return .
+
+/obj/item/organ/internal/heart/slime/proc/Cannibalize_Body(mob/living/carbon/human/H)
+	var/list/limbs_to_consume = list(BODY_ZONE_R_ARM, BODY_ZONE_L_ARM, BODY_ZONE_R_LEG, BODY_ZONE_L_LEG) - H.get_missing_limbs()
+	var/obj/item/bodypart/consumed_limb
+	if(!length(limbs_to_consume))
+		H.losebreath++
+		return
+	if(H.num_legs) //Legs go before arms
+		limbs_to_consume -= list(BODY_ZONE_R_ARM, BODY_ZONE_L_ARM)
+	consumed_limb = H.get_bodypart(pick(limbs_to_consume))
+	consumed_limb.drop_limb()
+	to_chat(H, span_userdanger("Your [consumed_limb] is drawn back into your body, unable to maintain its shape!"))
+	qdel(consumed_limb)
+	H.blood_volume += 20
+
+/datum/action/innate/regenerate_limbs
+	name = "Regenerate Limbs"
+	check_flags = AB_CHECK_CONSCIOUS
+	button_icon_state = "slimeheal"
+	button_icon = 'icons/mob/actions/actions_slime.dmi'
+	background_icon_state = "bg_alien"
+	overlay_icon_state = "bg_alien_border"
+
+/datum/action/innate/regenerate_limbs/IsAvailable(feedback = FALSE)
+	. = ..()
+	if(!.)
+		return
+	var/mob/living/carbon/human/H = owner
+	var/list/limbs_to_heal = H.get_missing_limbs()
+	if(!length(limbs_to_heal))
+		return FALSE
+	if(H.blood_volume >= BLOOD_VOLUME_OKAY+40)
+		return TRUE
+
+/datum/action/innate/regenerate_limbs/Activate()
+	var/mob/living/carbon/human/H = owner
+	var/list/limbs_to_heal = H.get_missing_limbs()
+	if(!length(limbs_to_heal))
+		to_chat(H, span_notice("You feel intact enough as it is."))
+		return
+	to_chat(H, span_notice("You focus intently on your missing [length(limbs_to_heal) >= 2 ? "limbs" : "limb"]..."))
+	if(H.blood_volume >= 40*length(limbs_to_heal)+BLOOD_VOLUME_OKAY)
+		H.regenerate_limbs()
+		H.blood_volume -= 40*length(limbs_to_heal)
+		to_chat(H, span_notice("...and after a moment you finish reforming!"))
+		return
+	else if(H.blood_volume >= 40)//We can partially heal some limbs
+		while(H.blood_volume >= BLOOD_VOLUME_OKAY+40)
+			var/healed_limb = pick(limbs_to_heal)
+			H.regenerate_limb(healed_limb)
+			limbs_to_heal -= healed_limb
+			H.blood_volume -= 40
+		to_chat(H, span_warning("...but there is not enough of you to fix everything! You must attain more mass to heal completely!"))
+		return
+	to_chat(H, span_warning("...but there is not enough of you to go around! You must attain more mass to heal!"))
+
+#undef JELLY_REGEN_RATE
+#undef JELLY_REGEN_RATE_EMPTY
+#undef BLOOD_VOLUME_LOSE_NUTRITION
