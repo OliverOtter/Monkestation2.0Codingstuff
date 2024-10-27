@@ -177,6 +177,18 @@
 //MONKESTATION EDIT START
 /datum/config_entry/string/alert_epsilon
 	default = "Central Command has ordered the Epsilon security level on the station. Consider all contracts terminated."
+
+/datum/config_entry/string/alert_yellow
+	default = "The station alert is now yellow. There is a structural or atmospheric threat within the station. Engineering staff are advised to immediately respond and perform safety measures. Crewmembers are advised to stay away from the threat, and stay in their workplaces if necessary."
+
+/datum/config_entry/string/alert_amber
+	default = "The station alert is now amber. There is a biological threat to the station. All crew members are advised to wear masks and enable internals as needed. Report any signs of biological hazards."
+
+/datum/config_entry/string/alert_gamma
+	default = "Central Command has ordered the Gamma security level on the station. Security is to have weapons equipped at all times, and all civilians are to immediately seek their nearest head for transportation to a secure location."
+
+/datum/config_entry/string/alert_lambda
+	default = "Warning! A massive spike in calamity level eldritch energy has been detected on board the station. All crew members are advised to seek the nearest evacuation point on the station, and pray to whatever NT-Approved god you believe in."
 //MONKESTATION EDIT STOP
 
 /datum/config_entry/flag/revival_pod_plants

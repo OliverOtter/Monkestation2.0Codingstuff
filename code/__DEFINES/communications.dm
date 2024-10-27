@@ -16,4 +16,12 @@
 //MONKESTATION EDIT START
 // Security level is epsilon. (yall fucked up)
 #define SEC_LEVEL_EPSILON 4
+/// Security level is yellow. (Engineering issue)
+#define SEC_LEVEL_YELLOW 1
+/// Security level is amber. (biological issue, so virus, blob, or bloodlings)
+#define SEC_LEVEL_VIOLET 1
+/// Security level is gamma. (Its like red alert, but CC flavored)
+#define SEC_LEVEL_GAMMA 2
+/// Security level is lambda. (oh god eldtrich beings won the video game)
+#define SEC_LEVEL_LAMBDA 3
 //MONKESTATION EDIT STOP
