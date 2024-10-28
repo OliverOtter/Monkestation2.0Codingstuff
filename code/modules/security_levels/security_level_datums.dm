@@ -125,7 +125,7 @@
  */
 /datum/security_level/amber
 	name = "Amber"
-	announcement_color = "cyan" //Im surprised this is a colors name, we're gonna hope it works
+	announcement_color = "#CD853F" //Im surprised this is a colors name, we're gonna hope it works
 	number_level = SEC_LEVEL_AMBER
 	sound = 'sound/misc/notice1.ogg' // Its just a more spesific blue alert v2
 	elevating_to_configuration_key = /datum/config_entry/string/alert_amber
@@ -151,7 +151,7 @@
  */
 /datum/security_level/lambda
 	name = "Lambda"
-	announcement_color = "crimson" //Either this, or a shade of purple i dunno.
+	announcement_color = "#800" //Either this, or a shade of purple i dunno.
 	number_level = SEC_LEVEL_LAMBDA
 	sound = 'monkestation/sound/misc/lambda.ogg' // Port over the ss14 gamma alert, rename it.
 	elevating_to_configuration_key = /datum/config_entry/string/alert_lambda
