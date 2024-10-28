@@ -9,19 +9,17 @@
 #define SEC_LEVEL_GREEN 0
 /// Security level is blue. (caution advised)
 #define SEC_LEVEL_BLUE 1
+/// Security level is yellow. (Engineering issue) MONKESTATION EDIT
+#define SEC_LEVEL_YELLOW 2
+/// Security level is amber. (biological issue, so blob or bloodlings) MONKESTATION EDIT
+#define SEC_LEVEL_AMBER 3
 /// Security level is red. (hostile threats)
-#define SEC_LEVEL_RED 2
+#define SEC_LEVEL_RED 4
+/// Security level is gamma. (Its like red alert, but CC flavored) MONKESTATION EDIT
+#define SEC_LEVEL_GAMMA 4
 /// Security level is delta. (station destruction immiment)
-#define SEC_LEVEL_DELTA 3
-//MONKESTATION EDIT START
-// Security level is epsilon. (yall fucked up)
-#define SEC_LEVEL_EPSILON 4
-/// Security level is yellow. (Engineering issue)
-#define SEC_LEVEL_YELLOW 1
-/// Security level is amber. (biological issue, so blob or bloodlings)
-#define SEC_LEVEL_AMBER 1
-/// Security level is gamma. (Its like red alert, but CC flavored)
-#define SEC_LEVEL_GAMMA 3
-/// Security level is lambda. (oh god eldtrich beings won the video game)
-#define SEC_LEVEL_LAMBDA 3
-//MONKESTATION EDIT STOP
+#define SEC_LEVEL_DELTA 5
+/// Security level is lambda. (oh god eldtrich beings won the video game) MONKESTATION EDIT
+#define SEC_LEVEL_LAMBDA 5
+// Security level is epsilon. (yall fucked up) MONKESTATION EDIT
+#define SEC_LEVEL_EPSILON 6

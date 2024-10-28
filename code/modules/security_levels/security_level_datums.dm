@@ -115,6 +115,7 @@
 	announcement_color = "yellow"
 	number_level = SEC_LEVEL_YELLOW
 	sound = 'sound/misc/notice1.ogg' // Its just a more spesific blue alert
+	lowering_to_configuration_key = /datum/config_entry/string/alert_yellow
 	elevating_to_configuration_key = /datum/config_entry/string/alert_yellow
 	shuttle_call_time_mod = 1.5 //Again, just a more spesific blue alert, but not as threatening
 
@@ -128,8 +129,9 @@
 	announcement_color = "amber" //I see now why adding grey was painful. WATER IN THE FIRE, WHY?! (Thank you Absolucy for helping add more colors)
 	number_level = SEC_LEVEL_AMBER
 	sound = 'sound/misc/notice1.ogg' // Its just a more spesific blue alert v2
+	lowering_to_configuration_key = /datum/config_entry/string/alert_amber
 	elevating_to_configuration_key = /datum/config_entry/string/alert_amber
-	shuttle_call_time_mod = 1 //Just a more spesific blue alert, the sequal to yellow
+	shuttle_call_time_mod = 1.5 //Just a more spesific blue alert, the sequal to yellow
 
 /**
  * GAMMA
@@ -141,6 +143,7 @@
 	announcement_color = "pink" //Its like red, but diffrent.
 	number_level = SEC_LEVEL_GAMMA
 	sound = 'monkestation/sound/misc/gamma.ogg' // Its just the star wars death star alert, but pitched lower and slowed down ever so slightly.
+	lowering_to_configuration_key = /datum/config_entry/string/alert_gamma
 	elevating_to_configuration_key = /datum/config_entry/string/alert_gamma
 	shuttle_call_time_mod = 0.5 //Oh god oh fuck things aint looking good.
 

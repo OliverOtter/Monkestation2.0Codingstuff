@@ -386,15 +386,19 @@
 				post_status(picture)
 			else
 				if(picture == "currentalert") // You cannot set Code Blue display during Code Red and similiar
-					switch(SSsecurity_level.get_current_level_as_number())
+					switch(SSsecurity_level.get_current_level_as_number()) //Lambda, Gamma, Yellow, and Amber dont have sprites for the boards to show their alert, YET. So i jsut paired them with similar for now.
 						if(SEC_LEVEL_DELTA)
+							post_status("alert", "deltaalert")
+						if(SEC_LEVEL_LAMBDA)
 							post_status("alert", "deltaalert")
 						if(SEC_LEVEL_RED)
 							post_status("alert", "redalert")
+						if(SEC_LEVEL_GAMMA)
+							post_status("alert", "redalert")
 						if(SEC_LEVEL_YELLOW)
-							post_status("alert", "yellowalert")
+							post_status("alert", "bluealert")
 						if(SEC_LEVEL_AMBER)
-							post_status("alert", "amberalert")
+							post_status("alert", "bluealert")
 						if(SEC_LEVEL_BLUE)
 							post_status("alert", "bluealert")
 						if(SEC_LEVEL_GREEN)
