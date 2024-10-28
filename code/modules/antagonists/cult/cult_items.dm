@@ -506,7 +506,7 @@ Striking a noncultist, however, will tear their flesh."}
 		if(totalcurses == 0)
 			first_curse_time = world.time
 
-		switch(security_num)
+		switch(security_num) //TODO: SET ALERT LEVELS TO CURSE
 			if(SEC_LEVEL_GREEN)
 				set_coefficient = 2
 			if(SEC_LEVEL_BLUE)

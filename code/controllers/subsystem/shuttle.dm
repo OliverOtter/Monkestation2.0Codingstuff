@@ -439,7 +439,7 @@ SUBSYSTEM_DEF(shuttle)
 /datum/controller/subsystem/shuttle/proc/canRecall()
 	if(!emergency || emergency.mode != SHUTTLE_CALL || admin_emergency_no_recall || emergency_no_recall)
 		return
-	var/security_num = SSsecurity_level.get_current_level_as_number()
+	var/security_num = SSsecurity_level.get_current_level_as_number() //TODO: ADD THIS POTENCIALLY FOR THE NEW ALETRS
 	switch(security_num)
 		if(SEC_LEVEL_GREEN)
 			if(emergency.timeLeft(1) < emergency_call_time)

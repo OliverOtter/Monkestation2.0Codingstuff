@@ -336,7 +336,7 @@
 
 /obj/docking_port/mobile/emergency/request(obj/docking_port/stationary/S, area/signal_origin, reason, red_alert, set_coefficient=null)
 	if(!isnum(set_coefficient))
-		var/security_num = SSsecurity_level.get_current_level_as_number()
+		var/security_num = SSsecurity_level.get_current_level_as_number() //TODO: SSET ALARM LEVELS TIME
 		switch(security_num)
 			if(SEC_LEVEL_GREEN)
 				set_coefficient = 2
