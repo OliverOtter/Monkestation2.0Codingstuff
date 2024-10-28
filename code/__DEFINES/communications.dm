@@ -21,7 +21,7 @@
 /// Security level is amber. (biological issue, so blob or bloodlings)
 #define SEC_LEVEL_AMBER 1
 /// Security level is gamma. (Its like red alert, but CC flavored)
-#define SEC_LEVEL_GAMMA 2
+#define SEC_LEVEL_GAMMA 3
 /// Security level is lambda. (oh god eldtrich beings won the video game)
 #define SEC_LEVEL_LAMBDA 3
 //MONKESTATION EDIT STOP
