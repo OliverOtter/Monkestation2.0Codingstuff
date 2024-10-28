@@ -113,7 +113,7 @@
 /datum/security_level/yellow
 	name = "Yellow"
 	announcement_color = "yellow"
-	number_level = SEC_LEVEL_EPSILON
+	number_level = SEC_LEVEL_YELLOW
 	sound = 'sound/misc/notice1.ogg' // Its just a more spesific blue alert
 	elevating_to_configuration_key = /datum/config_entry/string/alert_yellow
 	shuttle_call_time_mod = 1.5 //Again, just a more spesific blue alert, but not as threatening
@@ -125,8 +125,8 @@
  */
 /datum/security_level/amber
 	name = "Amber"
-	announcement_color = "peru" //Im surprised this is a colors name, we're gonna hope it works
-	number_level = SEC_LEVEL_amber
+	announcement_color = "cyan" //Im surprised this is a colors name, we're gonna hope it works
+	number_level = SEC_LEVEL_AMBER
 	sound = 'sound/misc/notice1.ogg' // Its just a more spesific blue alert v2
 	elevating_to_configuration_key = /datum/config_entry/string/alert_amber
 	shuttle_call_time_mod = 1 //Just a more spesific blue alert, the sequal to yellow
@@ -139,7 +139,7 @@
 /datum/security_level/gamma
 	name = "Gamma"
 	announcement_color = "pink" //Its like red, but diffrent.
-	number_level = SEC_LEVEL_amber
+	number_level = SEC_LEVEL_GAMMA
 	sound = 'monkestation/sound/misc/gamma.ogg' // PORT OVER THE FREKIN STAR WARS ALERT LEVEL
 	elevating_to_configuration_key = /datum/config_entry/string/alert_gamma
 	shuttle_call_time_mod = 0.5 //Oh god oh fuck things aint looking good.
@@ -151,8 +151,8 @@
  */
 /datum/security_level/lambda
 	name = "Lambda"
-	announcement_color = "maroon" //Either this, or a shade of purple i dunno.
-	number_level = SEC_LEVEL_lambda
+	announcement_color = "crimson" //Either this, or a shade of purple i dunno.
+	number_level = SEC_LEVEL_LAMBDA
 	sound = 'monkestation/sound/misc/lambda.ogg' // Port over the ss14 gamma alert, rename it.
 	elevating_to_configuration_key = /datum/config_entry/string/alert_lambda
 	shuttle_call_time_mod = 0.25 //This is as bad as the nuke going off. Everyone is fucked.
