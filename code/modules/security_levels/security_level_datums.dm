@@ -134,7 +134,7 @@
 /**
  * GAMMA
  *
- * The CentComm Flavor of Red Alert. Usually used for events.
+ * The CentCom Flavor of Red Alert. Usually used for events.
  */
 /datum/security_level/gamma
 	name = "Gamma"
