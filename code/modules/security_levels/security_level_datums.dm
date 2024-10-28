@@ -125,7 +125,7 @@
  */
 /datum/security_level/amber
 	name = "Amber"
-	announcement_color = "peru" //Im surprised this is a colors name, we're gonna hope it works
+	announcement_color = "beige" //Im surprised this is a colors name, we're gonna hope it works
 	number_level = SEC_LEVEL_AMBER
 	sound = 'sound/misc/notice1.ogg' // Its just a more spesific blue alert v2
 	elevating_to_configuration_key = /datum/config_entry/string/alert_amber
