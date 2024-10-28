@@ -140,7 +140,7 @@
 	name = "Gamma"
 	announcement_color = "pink" //Its like red, but diffrent.
 	number_level = SEC_LEVEL_GAMMA
-	sound = 'monkestation/sound/misc/gamma.ogg' // PORT OVER THE FREKIN STAR WARS ALERT LEVEL
+	sound = 'monkestation/sound/misc/gamma.ogg' // Its just the star wars death stae alert, but pitched lower and slowed down ever so slightly.
 	elevating_to_configuration_key = /datum/config_entry/string/alert_gamma
 	shuttle_call_time_mod = 0.5 //Oh god oh fuck things aint looking good.
 
@@ -153,7 +153,7 @@
 	name = "Lambda"
 	announcement_color = "maroon" //the color name is in the code. SO WHY DOES IT NOT WANT TO WORK
 	number_level = SEC_LEVEL_LAMBDA
-	sound = 'monkestation/sound/misc/lambda.ogg' // Port over the ss14 gamma alert, rename it.
+	sound = 'monkestation/sound/misc/lambda.ogg' // Ported over the current (as of this codes time) ss14 gamma alert, renamed because it fits better. Old gamma was better :(
 	elevating_to_configuration_key = /datum/config_entry/string/alert_lambda
 	shuttle_call_time_mod = 0.25 //This is as bad as the nuke going off. Everyone is fucked.
 //MONKESTATION EDIT STOP
