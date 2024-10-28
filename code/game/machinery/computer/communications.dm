@@ -201,7 +201,7 @@
 					return
 
 			var/new_sec_level = SSsecurity_level.text_level_to_number(params["newSecurityLevel"])
-			if (new_sec_level != SEC_LEVEL_GREEN && new_sec_level != SEC_LEVEL_BLUE)
+			if (new_sec_level != SEC_LEVEL_GREEN && new_sec_level != SEC_LEVEL_BLUE && new_sec_level != SEC_LEVEL_YELLOW && new_sec_level != SEC_LEVEL_AMBER)
 				return
 			if (SSsecurity_level.get_current_level_as_number() == new_sec_level)
 				return
@@ -391,6 +391,10 @@
 							post_status("alert", "deltaalert")
 						if(SEC_LEVEL_RED)
 							post_status("alert", "redalert")
+						if(SEC_LEVEL_YELLOW)
+							post_status("alert", "yellowalert")
+						if(SEC_LEVEL_AMBER)
+							post_status("alert", "amberalert")
 						if(SEC_LEVEL_BLUE)
 							post_status("alert", "bluealert")
 						if(SEC_LEVEL_GREEN)

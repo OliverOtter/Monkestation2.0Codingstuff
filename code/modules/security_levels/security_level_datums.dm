@@ -125,7 +125,7 @@
  */
 /datum/security_level/amber
 	name = "Amber"
-	announcement_color = "orange" //I see now why adding grey was painful. WATER IN THE FIRE, WHY?! (using orange till NightKnight can tell me how to add more colors)
+	announcement_color = "amber" //I see now why adding grey was painful. WATER IN THE FIRE, WHY?! (Thank you Absolucy for helping add more colors)
 	number_level = SEC_LEVEL_AMBER
 	sound = 'sound/misc/notice1.ogg' // Its just a more spesific blue alert v2
 	elevating_to_configuration_key = /datum/config_entry/string/alert_amber
@@ -140,7 +140,7 @@
 	name = "Gamma"
 	announcement_color = "pink" //Its like red, but diffrent.
 	number_level = SEC_LEVEL_GAMMA
-	sound = 'monkestation/sound/misc/gamma.ogg' // Its just the star wars death stae alert, but pitched lower and slowed down ever so slightly.
+	sound = 'monkestation/sound/misc/gamma.ogg' // Its just the star wars death star alert, but pitched lower and slowed down ever so slightly.
 	elevating_to_configuration_key = /datum/config_entry/string/alert_gamma
 	shuttle_call_time_mod = 0.5 //Oh god oh fuck things aint looking good.
 
@@ -151,7 +151,7 @@
  */
 /datum/security_level/lambda
 	name = "Lambda"
-	announcement_color = "purple" //Using purple until i can ask NightKnight how the fuck he got grey working
+	announcement_color = "crimson" //Thanking Absolucy for having a bigger brain than me in figuring out colors.
 	number_level = SEC_LEVEL_LAMBDA
 	sound = 'monkestation/sound/misc/lambda.ogg' // Ported over the current (as of this codes time) ss14 gamma alert, renamed because it fits better. Old gamma was better :(
 	elevating_to_configuration_key = /datum/config_entry/string/alert_lambda

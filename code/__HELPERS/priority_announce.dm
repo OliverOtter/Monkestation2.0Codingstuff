@@ -13,7 +13,7 @@
 #define CHAT_ALERT_DEFAULT_SPAN(string) ("<div class='chat_alert_default'>" + string + "</div>")
 #define CHAT_ALERT_COLORED_SPAN(color, string) ("<div class='chat_alert_" + color + "'>" + string + "</div>")
 
-#define ANNOUNCEMENT_COLORS list("default", "green", "blue", "pink", "yellow", "orange", "red", "purple", "grey") //monkestation edit (V2, TRYING to add peru and maroon, failed miserably, need to ask NightKnight how he did it)
+#define ANNOUNCEMENT_COLORS list("default", "green", "blue", "pink", "yellow", "orange", "red", "purple", "grey", "amber", "crimson") //monkestation edit (V2, Thank absolucy for teaching me how to add colors. NEVER AGAIN.)
 
 /**
  * Make a big red text announcement to
