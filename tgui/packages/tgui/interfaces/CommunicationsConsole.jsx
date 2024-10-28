@@ -352,6 +352,18 @@ const PageMain = (props) => {
                 showAlertLevelConfirm={showAlertLevelConfirm}
                 setShowAlertLevelConfirm={setShowAlertLevelConfirm}
               />
+
+              <AlertButton
+                alertLevel="yellow"
+                showAlertLevelConfirm={showAlertLevelConfirm}
+                setShowAlertLevelConfirm={setShowAlertLevelConfirm}
+              />
+
+              <AlertButton
+                alertLevel="amber"
+                showAlertLevelConfirm={showAlertLevelConfirm}
+                setShowAlertLevelConfirm={setShowAlertLevelConfirm}
+              />
             </Flex.Item>
           </Flex>
         </Section>
