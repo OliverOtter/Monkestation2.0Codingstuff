@@ -151,7 +151,7 @@
  */
 /datum/security_level/lambda
 	name = "Lambda"
-	announcement_color = "red" //Using Red until i can ask NightKnight how the fuck he got grey working
+	announcement_color = "purple" //Using purple until i can ask NightKnight how the fuck he got grey working
 	number_level = SEC_LEVEL_LAMBDA
 	sound = 'monkestation/sound/misc/lambda.ogg' // Ported over the current (as of this codes time) ss14 gamma alert, renamed because it fits better. Old gamma was better :(
 	elevating_to_configuration_key = /datum/config_entry/string/alert_lambda
