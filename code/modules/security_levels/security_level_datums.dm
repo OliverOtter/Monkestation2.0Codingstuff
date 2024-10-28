@@ -125,7 +125,7 @@
  */
 /datum/security_level/amber
 	name = "Amber"
-	announcement_color = "brown" //I see now why adding grey was painful. WATER IN THE FIRE, WHY?!
+	announcement_color = "Brown" //I see now why adding grey was painful. WATER IN THE FIRE, WHY?!
 	number_level = SEC_LEVEL_AMBER
 	sound = 'sound/misc/notice1.ogg' // Its just a more spesific blue alert v2
 	elevating_to_configuration_key = /datum/config_entry/string/alert_amber
@@ -151,7 +151,7 @@
  */
 /datum/security_level/lambda
 	name = "Lambda"
-	announcement_color = "maroon" //the color name is in the code. SO WHY DOES IT NOT WANT TO WORK
+	announcement_color = "Maroon" //the color name is in the code. SO WHY DOES IT NOT WANT TO WORK
 	number_level = SEC_LEVEL_LAMBDA
 	sound = 'monkestation/sound/misc/lambda.ogg' // Ported over the current (as of this codes time) ss14 gamma alert, renamed because it fits better. Old gamma was better :(
 	elevating_to_configuration_key = /datum/config_entry/string/alert_lambda
