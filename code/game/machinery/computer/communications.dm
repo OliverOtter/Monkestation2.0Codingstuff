@@ -201,7 +201,7 @@
 					return
 
 			var/new_sec_level = SSsecurity_level.text_level_to_number(params["newSecurityLevel"])
-			if (new_sec_level != SEC_LEVEL_GREEN && new_sec_level != SEC_LEVEL_BLUE) //TODO: ADD  SEC_LEVEL_YELLOW  SEC_LEVEL_AMBER once we figure out how to let the game understand im pressing the Swipe ID button to allow these two.
+			if (new_sec_level != SEC_LEVEL_GREEN && new_sec_level != SEC_LEVEL_BLUE && new_sec_level != SEC_LEVEL_YELLOW && new_sec_level != SEC_LEVEL_AMBER) //TODO: ADD  SEC_LEVEL_YELLOW  SEC_LEVEL_AMBER once we figure out how to let the game understand im pressing the Swipe ID button to allow these two.
 				return
 			if (SSsecurity_level.get_current_level_as_number() == new_sec_level)
 				return
@@ -396,7 +396,7 @@
 						if(SEC_LEVEL_GREEN)
 							post_status("alert", "greenalert")
 				else
-					post_status("alert", picture)
+					post_status("alert", "bluealert")
 
 			playsound(src, SFX_TERMINAL_TYPE, 50, FALSE)
 		if ("toggleAuthentication")

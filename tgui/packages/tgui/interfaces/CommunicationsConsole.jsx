@@ -352,6 +352,18 @@ const PageMain = (props) => {
                 showAlertLevelConfirm={showAlertLevelConfirm}
                 setShowAlertLevelConfirm={setShowAlertLevelConfirm} // add the amber and yellow buttons ONCE we figure out how the fuck the SWIPE ID button works. Fuck you TGUI.
               />
+
+              <AlertButton
+                alertLevel="yellow"
+                showAlertLevelConfirm={showAlertLevelConfirm}
+                setShowAlertLevelConfirm={setShowAlertLevelConfirm}
+              />
+
+              <AlertButton
+                alertLevel="amber"
+                showAlertLevelConfirm={showAlertLevelConfirm}
+                setShowAlertLevelConfirm={setShowAlertLevelConfirm}
+              />
             </Flex.Item>
           </Flex>
         </Section>
